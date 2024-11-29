@@ -18,7 +18,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          run: flutter --version
+          cache: true
       - name: Get dependencies
         run: flutter pub get
 
@@ -33,7 +33,7 @@ jobs:
         run: flutter build web
      
       - name: Upload Web Build Files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: web-release
           path: ./build/web
@@ -45,7 +45,7 @@ jobs:
 
     steps:
     - name: Download Web Release
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: web-release
 
