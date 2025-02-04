@@ -1,0 +1,18 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          runs_before:
+            - retrofit
+            - hive_generator
+          any_map: false
+          checked: false
+          constructor: ""
+          create_factory: true
+          create_to_json: true
+          disallow_unrecognized_keys: false
+          explicit_to_json: false
+          generic_argument_factories: false
+          ignore_unannotated: false
+          include_if_null: true
