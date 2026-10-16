@@ -1,0 +1,98 @@
+# Manual release: fast-forwards main to stage, tags it and publishes a GitHub
+# Release. Run from the Actions tab on `main` (owner only).
+#
+# Versioning: next vX.Y.Z is computed from the latest v* tag. With no tag yet
+# the base is v0.0.0, so the first run gives v0.0.1 (patch), v0.1.0 (minor) or
+# v1.0.0 (major). Use `major` for the public launch (v1.0.0).
+#
+# Requirements (see docs/SETTINGS_CHECKLIST.md):
+#   * The main ruleset must list "GitHub Actions" (integration id 15368) as a
+#     bypass actor, otherwise the push to main is rejected.
+#   * Pushes made with GITHUB_TOKEN do not trigger other workflows, so this
+#     workflow dispatches deploy.yml itself after pushing.
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release:
+    name: release
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BUMP: ${{ inputs.bump }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Verify stage is green and ahead of main
+        run: |
+          set -euo pipefail
+          git fetch origin stage
+          stage_sha=$(git rev-parse origin/stage)
+          read -r conclusion run_sha < <(gh run list --workflow deploy.yml --branch stage \
+            --limit 1 --json conclusion,headSha --jq '.[0] | "\(.conclusion) \(.headSha)"')
+          if [ "$run_sha" != "$stage_sha" ] || [ "$conclusion" != "success" ]; then
+            echo "::error::Latest deploy run on stage is '$conclusion' for ${run_sha:0:7}; stage head is ${stage_sha:0:7}. Wait for a green deploy of the current stage head."
+            exit 1
+          fi
+          if [ "$(git rev-parse origin/main)" = "$stage_sha" ]; then
+            echo "::error::main already equals stage, nothing to release."
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor origin/main origin/stage; then
+            echo "::error::main is not an ancestor of stage, so it cannot be fast-forwarded. Merge main into stage through a PR first."
+            exit 1
+          fi
+          echo "STAGE_SHA=$stage_sha" >> "$GITHUB_ENV"
+      - name: Compute next version
+        run: |
+          set -euo pipefail
+          latest=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          latest=${latest:-v0.0.0}
+          IFS=. read -r major minor patch <<< "${latest#v}"
+          case "$BUMP" in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+            *) echo "::error::Unknown bump '$BUMP'"; exit 1 ;;
+          esac
+          echo "PREVIOUS=$latest" >> "$GITHUB_ENV"
+          echo "VERSION=v$major.$minor.$patch" >> "$GITHUB_ENV"
+      - name: Fast-forward main to stage
+        run: git push origin "${STAGE_SHA}:refs/heads/main"
+      - name: Tag and publish GitHub Release
+        run: |
+          gh release create "$VERSION" --target "$STAGE_SHA" --title "$VERSION" --generate-notes
+      - name: Deploy production
+        run: gh workflow run deploy.yml --ref main
+      - name: Summary
+        run: |
+          {
+            echo '| Field | Value |'
+            echo '| --- | --- |'
+            echo "| Previous | \`$PREVIOUS\` |"
+            echo "| Released | \`$VERSION\` ($BUMP) |"
+            echo "| Commit | \`${STAGE_SHA:0:7}\` |"
+            echo "| Release | $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION |"
+          } >> "$GITHUB_STEP_SUMMARY"

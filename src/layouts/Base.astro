@@ -1,0 +1,32 @@
+---
+import { noindex } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+// Fonts: self-host only (files under public/fonts + @font-face).
+// No Google Fonts CDN — it sends visitors' IPs to a third party.
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link
+      rel="icon"
+      href={`${import.meta.env.BASE_URL}favicon.svg`}
+      type="image/svg+xml"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

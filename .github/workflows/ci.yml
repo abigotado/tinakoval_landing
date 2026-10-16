@@ -1,0 +1,38 @@
+# CI for pull requests into stage and main.
+# Runs format check, type check, build, then Lighthouse CI (mobile emulation)
+# against the built dist/. Make the `ci` job a required status check in the
+# stage and main rulesets (see docs/SETTINGS_CHECKLIST.md).
+name: CI
+
+on:
+  pull_request:
+    branches: [stage, main]
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run check
+      - run: npm run build
+      # Assertions live in lighthouserc.json. The placeholder page is noindex,
+      # so the `is-crawlable` audit is skipped there until launch.
+      - run: npx lhci autorun
