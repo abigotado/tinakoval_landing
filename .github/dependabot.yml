@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: stage
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: chore
+  - package-ecosystem: npm
+    directory: /
+    target-branch: stage
+    schedule:
+      interval: monthly
+    groups:
+      npm:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: chore
