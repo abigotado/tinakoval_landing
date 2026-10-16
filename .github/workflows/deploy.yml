@@ -72,9 +72,11 @@ jobs:
     permissions:
       contents: read
     steps:
+      # A stage-triggered run builds exactly the commit it reports success for,
+      # because Release trusts that SHA; other runs take the current stage.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: stage
+          ref: ${{ github.ref == 'refs/heads/stage' && github.sha || 'stage' }}
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -93,7 +95,7 @@ jobs:
   assemble:
     name: assemble
     needs: [build-main, build-stage]
-    if: always() && needs.build-main.result == 'success'
+    if: ${{ !cancelled() && needs.build-main.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions: {}
@@ -117,7 +119,7 @@ jobs:
   deploy:
     name: deploy
     needs: assemble
-    if: always() && needs.assemble.result == 'success'
+    if: ${{ !cancelled() && needs.assemble.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
