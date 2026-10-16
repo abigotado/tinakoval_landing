@@ -71,7 +71,27 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+    outputs:
+      current: ${{ steps.head.outputs.current }}
     steps:
+      # A re-run of an older stage commit must not roll /stage/ back. Runs queue
+      # behind each other (concurrency: pages), so by the time this one starts a
+      # newer stage head may already be live: then this run publishes nothing.
+      - id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IS_STAGE_RUN: ${{ github.ref == 'refs/heads/stage' }}
+          RUN_SHA: ${{ github.sha }}
+        run: |
+          current=true
+          if [ "$IS_STAGE_RUN" = true ]; then
+            head=$(gh api "repos/$GITHUB_REPOSITORY/commits/stage" --jq .sha)
+            if [ "$head" != "$RUN_SHA" ]; then
+              current=false
+              echo "::notice::$RUN_SHA is no longer the stage head ($head); not publishing."
+            fi
+          fi
+          echo "current=$current" >> "$GITHUB_OUTPUT"
       # A stage-triggered run builds exactly the commit it reports success for,
       # because Release trusts that SHA; other runs take the current stage.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -95,7 +115,7 @@ jobs:
   assemble:
     name: assemble
     needs: [build-main, build-stage]
-    if: ${{ !cancelled() && needs.build-main.result == 'success' }}
+    if: ${{ !cancelled() && needs.build-main.result == 'success' && needs.build-stage.outputs.current != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions: {}
