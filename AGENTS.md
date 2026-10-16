@@ -57,6 +57,17 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 - The site stays `noindex` until launch (`src/launch.ts` → `indexable`). At
   launch also drop `skipAudits` from `lighthouserc.json`.
 
+## Specs
+
+- Requirements and acceptance criteria live in `docs/specs/` (index:
+  `docs/specs/README.md`); decisions with reasons in `docs/decisions.md`.
+- Spec first: a PR that adds or changes behaviour updates the spec in the same
+  PR; smaller PRs cite the spec section they implement. List the closed `AC-…`
+  criteria in the PR's "Spec" section.
+- Site copy lives in `src/content/ru.ts`; the spec sets structure and rules.
+  Facts marked «уточнить» or «ждём» in `docs/specs/landing.md` §4 never ship to
+  production.
+
 ## Conventions
 
 - Page markup comes from the approved Claude Design mockups; do not invent
