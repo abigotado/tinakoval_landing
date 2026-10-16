@@ -1,0 +1,238 @@
+/* Design В1 «тихая комната» (docs/specs/landing.md §2). */
+
+:root {
+  --paper: #f4f2f1;
+  --paper-2: #f6f2ef;
+  --sage: #e8ece5;
+  --plum: #6b4e71;
+  --plum-dark: #5a3f60;
+  --ink: #2a2330;
+  --muted: #5f5563;
+  --night: #2e2433;
+  --night-text: #efe8f0;
+  --night-muted: #c9bfcb;
+  --night-accent: #d9bee0;
+  --journal: #f7f3e8;
+  --line: #d9d2d6;
+  --line-strong: #c9c0c6;
+  --line-sage: #c9cfc4;
+
+  --serif: 'Spectral', 'Spectral Fallback', Georgia, serif;
+  --sans:
+    'Golos Text', 'Golos Fallback', system-ui, -apple-system, 'Segoe UI',
+    Roboto, sans-serif;
+  --hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+
+  --gutter: 48px;
+  --section-y: 120px;
+  --header-h: 81px;
+  --dock-h: 0px;
+
+  color-scheme: light;
+}
+
+@media (max-width: 859px) {
+  :root {
+    --gutter: 20px;
+    --section-y: 72px;
+    --header-h: 73px;
+    /* Bottom booking bar (§5.14): 12 + 52 + 12 px plus the safe area. */
+    --dock-h: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 8px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+/* Hyphenate only where long Russian words could overflow (AC-RWD-3). */
+@media (max-width: 479px) {
+  body {
+    hyphens: auto;
+  }
+}
+
+@media (max-width: 859px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+blockquote,
+figure {
+  margin: 0;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+@media (hover: hover) {
+  a:hover {
+    color: var(--plum);
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--plum);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  z-index: 100;
+  top: 8px;
+  left: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  hyphens: manual;
+}
+
+.h2 {
+  margin-top: 16px;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(36px, 3.6vw, 52px);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+@media (max-width: 859px) {
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+
+  .h2 {
+    margin-top: 14px;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 30px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  hyphens: manual;
+}
+
+.btn-primary {
+  background: var(--plum);
+  color: #fff;
+}
+
+.btn-outline {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+@media (hover: hover) {
+  .btn-primary:hover {
+    background: var(--plum-dark);
+    color: #fff;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--plum);
+    color: var(--plum);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+h1,
+h2,
+h3 {
+  hyphens: manual;
+}

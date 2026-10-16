@@ -1,5 +1,8 @@
 ---
+import '../styles/global.css';
+
 import { noindex } from '../config';
+import { meta } from '../content/ru';
 
 interface Props {
   title: string;
@@ -8,8 +11,35 @@ interface Props {
 
 const { title, description } = Astro.props;
 
-// Fonts: self-host only (files under public/fonts + @font-face).
-// No Google Fonts CDN — it sends visitors' IPs to a third party.
+const base = import.meta.env.BASE_URL;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(`${base}og.jpg`, Astro.site);
+
+// Fonts are self-hosted (public/fonts, Cyrillic + Latin subsets). No Google
+// Fonts or other CDN: it would send visitors' IPs to a third party (D-7).
+// The @font-face rules are built here because their URLs need the base path
+// (stage is served under /stage/).
+const fonts = [
+  ['Spectral', 'spectral-300', 300, 'normal'],
+  ['Spectral', 'spectral-300-italic', 300, 'italic'],
+  ['Spectral', 'spectral-400', 400, 'normal'],
+  ['Golos Text', 'golos-text', '400 600', 'normal'],
+  ['Caveat', 'caveat-500', 500, 'normal'],
+] as const;
+const fontFaces = fonts
+  .map(
+    ([family, file, weight, style]) =>
+      `@font-face{font-family:'${family}';src:url('${base}fonts/${file}.woff2') format('woff2');font-weight:${weight};font-style:${style};font-display:swap}`,
+  )
+  .join('');
+
+// Metric-matched fallbacks keep text from shifting when the web fonts swap in
+// (CLS). Values come from the Spectral/Golos metrics against Times New Roman
+// and Arial (Liberation fonts are their metric-compatible Linux twins).
+const fallbackFaces = [
+  "@font-face{font-family:'Spectral Fallback';src:local('Times New Roman'),local('TimesNewRomanPSMT'),local('Liberation Serif');size-adjust:106.46%;ascent-override:99.47%;descent-override:43.49%;line-gap-override:0%}",
+  "@font-face{font-family:'Golos Fallback';src:local('Arial'),local('ArialMT'),local('Liberation Sans');size-adjust:106.14%;ascent-override:92.33%;descent-override:20.73%;line-gap-override:0%}",
+].join('');
 ---
 
 <!doctype html>
@@ -20,11 +50,33 @@ const { title, description } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <meta name="theme-color" content="#F4F2F1" />
     <link
-      rel="icon"
-      href={`${import.meta.env.BASE_URL}favicon.svg`}
-      type="image/svg+xml"
+      rel="preload"
+      href={`${base}fonts/spectral-300.woff2`}
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    <style is:inline set:html={fontFaces + fallbackFaces} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Ксения Коваленко" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={meta.ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <slot name="head" />
   </head>
   <body>
     <slot />

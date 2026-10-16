@@ -1,0 +1,80 @@
+---
+import { footer, person } from '../content/ru';
+
+interface Props {
+  /** Leave room for the phone booking bar (AC-DOCK-1). */
+  withDock?: boolean;
+}
+
+const { withDock = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const year = new Date().getFullYear();
+---
+
+<footer class:list={['footer', { 'footer-dock': withDock }]}>
+  <div class="container footer-inner">
+    <div class="footer-notes">
+      <p>{footer.disclaimer}</p>
+      <p>{footer.metaNote}</p>
+    </div>
+    <div class="footer-meta">
+      <a href={`${base}privacy/`}>{footer.policy}</a>
+      <p>
+        © {year} {person.name}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 48px;
+    padding-block: 32px 40px;
+  }
+
+  .footer-notes {
+    display: flex;
+    flex: 1 1 520px;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 46em;
+  }
+
+  .footer-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .footer-meta a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  @media (max-width: 859px) {
+    .footer-inner {
+      flex-direction: column;
+      padding-block: 28px;
+    }
+
+    .footer-notes {
+      flex-basis: auto;
+    }
+
+    .footer-dock .footer-inner {
+      padding-bottom: calc(28px + var(--dock-h));
+    }
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { contacts, policy } from '../content/ru';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title={policy.metaTitle} description={policy.metaDescription}>
+  <Header />
+  <main id="main" class="container policy">
+    <h1>{policy.title}</h1>
+    <p class="policy-revision">{policy.revision}</p>
+    <p class="policy-intro">{policy.intro}</p>
+    {policy.sections.map((section) => (
+      <section>
+        <h2>{section.title}</h2>
+        {section.paragraphs.map((text) => {
+          // The contact email inside a paragraph becomes a mailto link.
+          const [before, after] = text.split(contacts.email);
+          return after === undefined ? (
+            <p>{text}</p>
+          ) : (
+            <p>
+              {before}
+              <a href={`mailto:${contacts.email}`}>{contacts.email}</a>
+              {after}
+            </p>
+          );
+        })}
+      </section>
+    ))}
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .policy {
+    max-width: calc(46em + 2 * var(--gutter));
+    padding-block: 72px 96px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .policy-revision {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .policy-intro {
+    margin-top: 28px;
+  }
+
+  section {
+    margin-top: 40px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.2;
+  }
+
+  section p {
+    margin-top: 12px;
+  }
+
+  @media (max-width: 859px) {
+    .policy {
+      padding-block: 40px 64px;
+    }
+  }
+</style>
