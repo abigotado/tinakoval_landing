@@ -4,9 +4,14 @@
 #   stage -> https://tinaksenia.com/stage/   (preview, noindex)
 #
 # Both branches are rebuilt on every run and merged into one Pages artifact, so
-# a push to either branch never wipes the other one. The output is plain static
-# files in dist/ with no Pages-specific runtime, so moving to another static
-# host (e.g. Yandex Object Storage) only means replacing the last two steps.
+# a push to either branch never wipes the other one. Each branch builds in its
+# own job, so nothing the stage build runs can touch the production output. If
+# the stage build fails, production still deploys (without /stage/), but the
+# run is red, so Release will not pick that stage head.
+#
+# The output is plain static files in dist/ with no Pages-specific runtime, so
+# moving to another static host (e.g. Yandex Object Storage) only means
+# replacing the assemble/deploy jobs.
 #
 # DNS records at the registrar (domain: tinaksenia.com):
 #   apex  (@)   A      185.199.108.153
@@ -35,8 +40,10 @@ concurrency:
 permissions: {}
 
 jobs:
-  build:
-    name: build
+  # No npm cache in the two build jobs: the production build must not restore
+  # anything a stage build could have written.
+  build-main:
+    name: build-main
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -45,52 +52,77 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
-          path: main
-          persist-credentials: false
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: stage
-          path: stage
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version-file: main/.nvmrc
-          cache: npm
-          cache-dependency-path: |
-            main/package-lock.json
-            stage/package-lock.json
-      - name: Build main (site root)
-        working-directory: main
-        run: |
-          npm ci
-          npm run build
-      - name: Build stage (/stage/)
-        working-directory: stage
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-main
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
+
+  build-stage:
+    name: build-stage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: stage
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npm run build
         env:
           DEPLOY_ENV: stage
-        run: |
-          npm ci
-          npm run build
-      - name: Assemble Pages artifact
-        run: |
-          mkdir _site
-          cp -R main/dist/. _site/
-          mkdir _site/stage
-          cp -R stage/dist/. _site/stage/
-          echo 'tinaksenia.com' > _site/CNAME
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-stage
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
+
+  assemble:
+    name: assemble
+    needs: [build-main, build-stage]
+    if: always() && needs.build-main.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions: {}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site-main
+          path: _site
+      - if: needs.build-stage.result == 'success'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site-stage
+          path: _site/stage
+      - if: needs.build-stage.result != 'success'
+        run: echo "::warning::Stage build did not succeed; publishing production without /stage/."
+      - run: echo 'tinaksenia.com' > _site/CNAME
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: _site
 
   deploy:
     name: deploy
-    needs: build
+    needs: assemble
+    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       pages: write
       id-token: write
-      contents: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

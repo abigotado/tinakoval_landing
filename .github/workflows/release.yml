@@ -1,19 +1,27 @@
 # Manual release: fast-forwards main to stage, tags it and publishes a GitHub
-# Release. Run from the Actions tab on `main` (owner only).
+# Release. Owner only. Dispatch it from the Actions tab on the default branch
+# `stage` (the `release` environment only allows `stage`); the job checks out
+# `main` itself, so the selected ref only decides which copy of this file runs.
 #
-# Versioning: next vX.Y.Z is computed from the latest v* tag. With no tag yet
-# the base is v0.0.0, so the first run gives v0.0.1 (patch), v0.1.0 (minor) or
-# v1.0.0 (major). Use `major` for the public launch (v1.0.0).
+# Gate: the stage head must have a successful CI run and a successful Deploy
+# run (so /stage/ was built and published from exactly that commit).
 #
-# The push to main uses a deploy key (secret RELEASE_DEPLOY_KEY), not
-# GITHUB_TOKEN, because GITHUB_TOKEN can never push commits that touch
-# .github/workflows/ (Dependabot bumps do), and its pushes do not trigger other
-# workflows. A deploy-key push triggers deploy.yml through its `push: main`
-# trigger. The key must be a bypass actor of the main ruleset; setup is in
-# docs/SETTINGS_CHECKLIST.md.
+# Versioning: next vX.Y.Z is computed from the highest vX.Y.Z tag. With no tag
+# yet the base is v0.0.0, so the first run gives v0.0.1 (patch), v0.1.0 (minor)
+# or v1.0.0 (major). Use `major` for the public launch (v1.0.0).
 #
-# Re-running after a partial failure resumes: if main already equals stage but
-# no tag points at it yet, the push is skipped and the tag/release is created.
+# The push to main uses a deploy key (secret RELEASE_DEPLOY_KEY of the `release`
+# environment), not GITHUB_TOKEN, because GITHUB_TOKEN can never push commits
+# that touch .github/workflows/ (Dependabot bumps do), and its pushes do not
+# trigger other workflows. A deploy-key push triggers deploy.yml through its
+# `push: main` trigger. The key is the bypass actor of the `main-release`
+# ruleset; setup is in docs/SETTINGS_CHECKLIST.md.
+#
+# Re-running is safe and resumes a partial release:
+#   - main already equals stage but is untagged: skip the push, tag, release,
+#     deploy;
+#   - main already equals stage and is tagged: make sure the GitHub Release for
+#     that tag exists, then deploy again.
 name: Release
 
 on:
@@ -34,16 +42,20 @@ permissions: {}
 jobs:
   release:
     name: release
-    if: github.triggering_actor == github.repository_owner
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment: release
     permissions:
       contents: write
       actions: write
     env:
       GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
       BUMP: ${{ inputs.bump }}
     steps:
+      - name: Owner only
+        if: github.triggering_actor != github.repository_owner
+        run: echo "::error::Only the repository owner can run Release." && exit 1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
@@ -55,59 +67,70 @@ jobs:
           set -euo pipefail
           git fetch origin stage
           stage_sha=$(git rev-parse origin/stage)
-          run=$(gh run list --workflow deploy.yml --branch stage --limit 1 \
-            --json status,conclusion,headSha --jq '.[0] | "\(.headSha) \(.status) \(.conclusion)"')
-          read -r run_sha run_status run_conclusion <<< "$run"
-          if [ "$run_sha" != "$stage_sha" ] || [ "$run_status" != "completed" ] || [ "$run_conclusion" != "success" ]; then
-            echo "::error::Latest deploy run on stage: ${run_sha:0:7} is $run_status/$run_conclusion; stage head is ${stage_sha:0:7}. Wait for a green deploy of the current stage head."
-            exit 1
-          fi
-          if [ "$(git rev-parse origin/main)" = "$stage_sha" ]; then
-            if [ -n "$(git tag --points-at "$stage_sha" --list 'v[0-9]*.[0-9]*.[0-9]*')" ]; then
-              echo "::error::main already equals stage and is tagged, nothing to release."
+          for wf in ci.yml deploy.yml; do
+            ok=$(gh run list --workflow "$wf" --commit "$stage_sha" --status success \
+              --limit 1 --json databaseId --jq length)
+            if [ "$ok" != 1 ]; then
+              echo "::error::No successful $wf run for the stage head ${stage_sha:0:7}. Wait for CI and Deploy of the current stage head to go green."
               exit 1
             fi
-            echo "main already equals stage but is untagged: resuming a partial release."
-            echo "PUSH_NEEDED=false" >> "$GITHUB_ENV"
+          done
+          if [ "$(git rev-parse origin/main)" = "$stage_sha" ]; then
+            tagged=$(git tag --points-at "$stage_sha" | awk '/^v[0-9]+\.[0-9]+\.[0-9]+$/' | sort -V | tail -n1)
+            if [ -n "$tagged" ]; then
+              echo "main already equals stage and is tagged $tagged: ensuring its release and redeploying."
+              echo "MODE=redeploy" >> "$GITHUB_ENV"
+              echo "VERSION=$tagged" >> "$GITHUB_ENV"
+            else
+              echo "main already equals stage but is untagged: resuming a partial release."
+              echo "MODE=resume" >> "$GITHUB_ENV"
+            fi
           else
             if ! git merge-base --is-ancestor origin/main origin/stage; then
               echo "::error::main has commits that stage lacks, so it cannot be fast-forwarded. Bring stage up to date with main before releasing."
               exit 1
             fi
-            echo "PUSH_NEEDED=true" >> "$GITHUB_ENV"
+            echo "MODE=release" >> "$GITHUB_ENV"
           fi
           echo "STAGE_SHA=$stage_sha" >> "$GITHUB_ENV"
       - name: Compute next version
+        if: env.MODE != 'redeploy'
         run: |
           set -euo pipefail
-          latest=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          latest=$(git tag --list 'v*' | awk '/^v[0-9]+\.[0-9]+\.[0-9]+$/' | sort -V | tail -n1)
           latest=${latest:-v0.0.0}
           IFS=. read -r major minor patch <<< "${latest#v}"
+          major=$((10#$major)); minor=$((10#$minor)); patch=$((10#$patch))
           case "$BUMP" in
             major) major=$((major + 1)); minor=0; patch=0 ;;
             minor) minor=$((minor + 1)); patch=0 ;;
             patch) patch=$((patch + 1)) ;;
             *) echo "::error::Unknown bump '$BUMP'"; exit 1 ;;
           esac
-          echo "PREVIOUS=$latest" >> "$GITHUB_ENV"
           echo "VERSION=v$major.$minor.$patch" >> "$GITHUB_ENV"
       - name: Fast-forward main to stage
-        if: env.PUSH_NEEDED == 'true'
+        if: env.MODE == 'release'
         run: git push origin "${STAGE_SHA}:refs/heads/main"
       - name: Tag and publish GitHub Release
-        run: gh release create "$VERSION" --target "$STAGE_SHA" --title "$VERSION" --generate-notes
+        run: |
+          set -euo pipefail
+          if gh release view "$VERSION" --json tagName > /dev/null; then
+            echo "Release $VERSION already exists."
+          else
+            gh release create "$VERSION" --target "$STAGE_SHA" --title "$VERSION" --generate-notes
+          fi
       - name: Deploy production when the push did not
-        if: env.PUSH_NEEDED == 'false'
+        if: env.MODE != 'release'
         run: gh workflow run deploy.yml --ref main
       - name: Summary
         run: |
           {
             echo '| Field | Value |'
             echo '| --- | --- |'
-            echo "| Previous | \`$PREVIOUS\` |"
-            echo "| Released | \`$VERSION\` ($BUMP) |"
+            echo "| Mode | \`$MODE\` |"
+            echo "| Version | \`$VERSION\` ($BUMP) |"
             echo "| Commit | \`${STAGE_SHA:0:7}\` |"
             echo "| Release | $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION |"
             echo ''
-            echo "Production deploys from the \`push: main\` trigger of Deploy (dispatched by hand when resuming)."
+            echo "Production deploys from the \`push: main\` trigger of Deploy (dispatched here when there was no push)."
           } >> "$GITHUB_STEP_SUMMARY"

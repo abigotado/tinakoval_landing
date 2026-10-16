@@ -1,31 +1,30 @@
 # Repository settings checklist
 
 One-time setup that lives outside the code. Run the steps in order, as the
-repo owner (`gh auth status` should show `abigotado`). `REPO=abigotado/tinakoval_landing`.
-
-## 0. Bootstrap order
-
-`release.yml` and `deploy.yml` must exist on `main` before they can be
-dispatched, and the rulesets would block the first sync. So:
-
-1. Create `stage` from `main`.
-2. Merge the harness PR (`chore/astro-harness`) into `stage`.
-3. Fast-forward `main` to `stage` once by hand (step 3 below).
-4. Only then apply the `main` ruleset and switch Pages.
-
-Until step 5 is done the Deploy workflow cannot publish (Pages is still on the
-legacy `gh-pages` source), and any Deploy run before step 3 fails at setup-node
-because `main` has no `.nvmrc` or lockfile yet. Both are expected: after step 5,
-run **Deploy** once by hand.
-
-## 1. Create `stage`
+repo owner (`gh auth status` should show `abigotado`).
 
 ```bash
-gh api "repos/$REPO/git/refs" -f ref=refs/heads/stage \
-  -f sha="$(gh api repos/$REPO/git/ref/heads/main --jq .object.sha)"
+REPO=abigotado/tinakoval_landing
 ```
 
-## 2. Merge settings (squash only, tidy branches)
+## 0. State and bootstrap order
+
+Already done:
+
+- [x] `stage` exists and is the default branch. This also covers Dependabot
+      _security_ updates, which ignore `target-branch` and open PRs against
+      the default branch, so they land on `stage` like every other PR.
+
+`release.yml` and `deploy.yml` must exist on `main` before production can
+deploy, and the `main` rulesets would block the one-time sync. So: settings and
+Pages first (steps 1–5), then merge the harness into `stage`, fast-forward
+`main` once by hand (step 6), and only then apply the `main` rulesets (step 7).
+
+Any Deploy run before step 6 fails at `build-main` (`main` has no `.nvmrc` or
+lockfile yet) and any run before step 4 cannot publish. Both are expected; step
+6 ends with a Deploy run that the first Release needs.
+
+## 1. Merge settings (squash only, tidy branches)
 
 ```bash
 gh api -X PATCH "repos/$REPO" -F allow_squash_merge=true -F allow_merge_commit=false \
@@ -33,17 +32,48 @@ gh api -X PATCH "repos/$REPO" -F allow_squash_merge=true -F allow_merge_commit=f
   -f squash_merge_commit_title=PR_TITLE -f squash_merge_commit_message=BLANK
 ```
 
-## 3. One-time bootstrap of `main` (after the harness PR is in `stage`)
+## 2. `release` environment and its deploy key
 
-Fast-forward only, never force. Done through the API so it works without a
-local checkout; it fails if `main` is not an ancestor of `stage`.
+`release.yml` pushes `main` with a deploy key, because `GITHUB_TOKEN` can never
+update commits touching `.github/workflows/` (Dependabot bumps do) and its
+pushes would not trigger Deploy. The key is an environment secret of `release`,
+so only a job in that environment can read it: the environment only accepts
+runs from `stage` (Release is dispatched from the default branch) and waits for
+the owner's approval. A repository-level secret would be readable by any
+workflow on any branch, so it must not exist.
 
 ```bash
-gh api -X PATCH "repos/$REPO/git/refs/heads/main" \
-  -f sha="$(gh api repos/$REPO/git/ref/heads/stage --jq .object.sha)" -F force=false
+OWNER_ID=$(gh api users/abigotado --jq .id)
+gh api -X PUT "repos/$REPO/environments/release" --input - <<JSON
+{
+  "reviewers": [{ "type": "User", "id": $OWNER_ID }],
+  "deployment_branch_policy": { "protected_branches": false, "custom_branch_policies": true }
+}
+JSON
+gh api -X POST "repos/$REPO/environments/release/deployment-branch-policies" \
+  -f name=stage -f type=branch
 ```
 
-## 4. Allow `stage` to deploy to the `github-pages` environment
+Create the key and store it as the environment secret (the private key never
+leaves your machine except into the secret):
+
+```bash
+ssh-keygen -t ed25519 -N '' -C release-deploy-key -f ./release_key
+gh api -X POST "repos/$REPO/keys" -f title=release-deploy-key \
+  -f key="$(cat ./release_key.pub)" -F read_only=false
+gh secret set RELEASE_DEPLOY_KEY --repo "$REPO" --env release < ./release_key
+rm ./release_key ./release_key.pub
+```
+
+Delete any repository-level copy and check where the secret lives:
+
+```bash
+gh secret delete RELEASE_DEPLOY_KEY --repo "$REPO"   # only if it exists
+gh secret list --repo "$REPO"                        # must NOT list it
+gh secret list --repo "$REPO" --env release          # must list it
+```
+
+## 3. Allow `main` and `stage` to deploy to `github-pages`
 
 The environment already exists and currently allows only `gh-pages`. Deploys
 run from `main` and `stage`, so allow both (list first with
@@ -56,12 +86,12 @@ for b in main stage; do
 done
 ```
 
-Remove the `gh-pages` policy after step 8 (use the policy id from the list).
+Remove the `gh-pages` policy in step 8 (use the policy id from the list).
 
-## 5. Pages: GitHub Actions + custom domain
+## 4. Pages: GitHub Actions + custom domain
 
-Do this after the DNS records from the header of `deploy.yml` are in place
-(the domain is being bought, so this may wait).
+Needs the DNS records from the header of `deploy.yml` (the domain is being
+bought, so the custom domain part may wait).
 
 ```bash
 gh api -X PUT "repos/$REPO/pages" -f build_type=workflow -f cname=tinaksenia.com
@@ -69,12 +99,11 @@ gh api -X PUT "repos/$REPO/pages" -f build_type=workflow -f cname=tinaksenia.com
 gh api -X PUT "repos/$REPO/pages" -F https_enforced=true
 ```
 
-Then run **Deploy** once (Actions tab, or `gh workflow run deploy.yml --ref main`).
 Until DNS exists, send `-f build_type=workflow` alone. The site is then served
 under `https://abigotado.github.io/tinakoval_landing/`, where the root-absolute
 asset paths do not match, so verify on the real domain.
 
-## 6. Ruleset: `stage`
+## 5. Ruleset: `stage`
 
 PR required, squash only, `ci` required, no deletion or force push.
 
@@ -111,26 +140,30 @@ gh api -X POST "repos/$REPO/rulesets" --input - <<'JSON'
 JSON
 ```
 
-## 7. Ruleset: `main`
+## 6. One-time bootstrap of `main` (after the harness PR is merged into `stage`)
 
-No direct pushes, no deletion, no force push, linear history. The only bypass
-is a deploy key used by `release.yml` to fast-forward `main`. A deploy key is
-needed instead of `GITHUB_TOKEN` because that token can never update commits
-touching `.github/workflows/` (Dependabot bumps do), and its pushes would not
-trigger Deploy.
-
-First create the key and the secret (the private key never leaves your machine
-except into the secret):
+Fast-forward only, never force. Done through the API so it works without a
+local checkout; it fails if `main` is not an ancestor of `stage`.
 
 ```bash
-ssh-keygen -t ed25519 -N '' -C release-deploy-key -f ./release_key
-gh api -X POST "repos/$REPO/keys" -f title=release-deploy-key \
-  -f key="$(cat ./release_key.pub)" -F read_only=false
-gh secret set RELEASE_DEPLOY_KEY --repo "$REPO" < ./release_key
-rm ./release_key ./release_key.pub
+gh api -X PATCH "repos/$REPO/git/refs/heads/main" \
+  -f sha="$(gh api repos/$REPO/git/ref/heads/stage --jq .object.sha)" -F force=false
 ```
 
-Then the ruleset:
+This push triggers Deploy for `main`. Then run Deploy once more on `stage`, so
+the `stage` head has the green Deploy run that Release checks for:
+
+```bash
+gh workflow run deploy.yml --ref stage
+```
+
+## 7. Rulesets: `main`
+
+Two rulesets, so the deploy key can bypass only the "no updates" rule:
+
+- `main`: no deletion, no force push, linear history. **No bypass**, so even
+  the release key can only fast-forward.
+- `main-release`: no updates at all, except by the deploy key from step 2.
 
 ```bash
 gh api -X POST "repos/$REPO/rulesets" --input - <<'JSON'
@@ -139,30 +172,54 @@ gh api -X POST "repos/$REPO/rulesets" --input - <<'JSON'
   "target": "branch",
   "enforcement": "active",
   "conditions": { "ref_name": { "include": ["refs/heads/main"], "exclude": [] } },
-  "bypass_actors": [{ "actor_type": "DeployKey", "bypass_mode": "always" }],
   "rules": [
     { "type": "deletion" },
     { "type": "non_fast_forward" },
-    { "type": "required_linear_history" },
-    { "type": "update", "parameters": { "update_allows_fetch_and_merge": false } }
+    { "type": "required_linear_history" }
   ]
+}
+JSON
+gh api -X POST "repos/$REPO/rulesets" --input - <<'JSON'
+{
+  "name": "main-release",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": { "ref_name": { "include": ["refs/heads/main"], "exclude": [] } },
+  "bypass_actors": [{ "actor_type": "DeployKey", "bypass_mode": "always" }],
+  "rules": [{ "type": "update", "parameters": { "update_allows_fetch_and_merge": false } }]
 }
 JSON
 ```
 
-Not verified end to end: that GitHub accepts a `DeployKey` bypass actor without
-an `actor_id` for this repository. If the API rejects the payload, add the deploy
-key as a bypass actor in Settings → Rules → main instead. The first **Release**
-run is the real test.
+Classic branch protection cannot be bypassed by a deploy key, so `main` must
+have none (rulesets replace it):
 
-Also note: Dependabot _security_ updates ignore `target-branch` and open PRs
-against the default branch (`main`), where the ruleset blocks them. Either turn
-off Dependabot security updates (Settings → Advanced Security) or make `stage`
-the default branch (Settings → Branches).
+```bash
+gh api "repos/$REPO/branches/main/protection"   # expect: Branch not protected (HTTP 404)
+# if it prints a rule instead, remove it:
+gh api -X DELETE "repos/$REPO/branches/main/protection"
+```
+
+Not verified end to end: that GitHub accepts a `DeployKey` bypass actor on a
+personal repository. If the API rejects the payload, try adding the deploy key
+as a bypass actor in Settings → Rules → main-release. The first **Release** run
+is the real test. If its push to `main` is rejected, fast-forward by hand with
+`main-release` switched off, then re-run Release: it resumes when `main`
+already equals `stage` (tags, publishes the release, deploys).
+
+```bash
+RID=$(gh api "repos/$REPO/rulesets" --jq '.[] | select(.name=="main-release") | .id')
+gh api -X PUT "repos/$REPO/rulesets/$RID" -f enforcement=disabled
+gh api -X PATCH "repos/$REPO/git/refs/heads/main" \
+  -f sha="$(gh api repos/$REPO/git/ref/heads/stage --jq .object.sha)" -F force=false
+gh api -X PUT "repos/$REPO/rulesets/$RID" -f enforcement=active
+gh workflow run release.yml --ref stage -f bump=patch
+```
 
 ## 8. Remove the legacy `gh-pages` branch
 
-Only after the Actions deploy is serving the site.
+Only after the Actions deploy is serving the site. Also remove the `gh-pages`
+deployment branch policy from step 3.
 
 ```bash
 gh api -X DELETE "repos/$REPO/git/refs/heads/gh-pages"
@@ -170,7 +227,7 @@ gh api -X DELETE "repos/$REPO/git/refs/heads/gh-pages"
 
 ## Launch checklist (later)
 
-- Set `indexable = true` in `src/config.ts`.
+- Set `indexable = true` in `src/launch.ts`.
 - Remove `skipAudits` from `lighthouserc.json` (the placeholder is noindex, so
   Lighthouse `is-crawlable` is skipped to keep the SEO score at 1).
 - Run **Release** with `major` for `v1.0.0`.

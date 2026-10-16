@@ -1,15 +1,18 @@
-# CI for pull requests into stage and main.
-# Runs format check, type check, build, then Lighthouse CI (mobile emulation)
-# against the built dist/. Make the `ci` job a required status check in the
-# stage and main rulesets (see docs/SETTINGS_CHECKLIST.md).
+# CI for pull requests into stage and main, and for every push to stage (the
+# squash commit). Release requires a green run of this workflow on the stage
+# head. Runs format check, type check, build, then Lighthouse CI (mobile
+# emulation) against the built dist/. `ci` is a required status check in the
+# stage ruleset (see docs/SETTINGS_CHECKLIST.md).
 name: CI
 
 on:
   pull_request:
     branches: [stage, main]
+  push:
+    branches: [stage]
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions: {}
