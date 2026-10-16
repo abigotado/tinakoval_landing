@@ -77,6 +77,7 @@ jobs:
       # A re-run of an older stage commit must not roll /stage/ back. Runs queue
       # behind each other (concurrency: pages), so by the time this one starts a
       # newer stage head may already be live: then this run publishes nothing.
+      # If this check itself fails, nothing is published either.
       - id: head
         env:
           GH_TOKEN: ${{ github.token }}
@@ -115,7 +116,7 @@ jobs:
   assemble:
     name: assemble
     needs: [build-main, build-stage]
-    if: ${{ !cancelled() && needs.build-main.result == 'success' && needs.build-stage.outputs.current != 'false' }}
+    if: ${{ !cancelled() && needs.build-main.result == 'success' && needs.build-stage.outputs.current == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions: {}
