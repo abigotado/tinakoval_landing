@@ -47,8 +47,10 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 
 ## Content and privacy rules
 
-- Never publish the diploma appendix PDF, identity documents, her date of birth
-  or maiden name, or any client data (names, messages, photos, details).
+- Never publish identity documents, the graded pages of the diploma appendix
+  (page 2 onward), or any client data (names, messages, photos, details).
+  Page 1 of the appendix is approved by her as is, including her full and
+  maiden name, date of birth and document numbers.
 - Her approved public contacts are allowed and must stay on the page:
   Telegram @tinakseniya, WhatsApp +7 968 749-57-49, Instagram @tinaksenia (with
   the Meta footnote). The list of what may be published is
