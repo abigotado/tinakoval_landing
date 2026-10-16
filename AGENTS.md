@@ -51,10 +51,9 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
   (page 2 onward), or any client data (names, messages, photos, details).
   Page 1 of the appendix is approved by her as is, including her full and
   maiden name, date of birth and document numbers.
-- Her approved public contacts are allowed and must stay on the page:
-  Telegram @tinakseniya, WhatsApp +7 968 749-57-49, Instagram @tinaksenia (with
-  the Meta footnote). The list of what may be published is
-  `docs/specs/landing.md` §4.
+- The only public contact is Telegram @tinakseniya (nick, `t.me` link and a QR
+  code). Never show her phone number, WhatsApp or Instagram on the site. The
+  list of what may be published is `docs/specs/landing.md` §4.
 - No analytics or tracking scripts without a consent banner first.
 - No Google Fonts CDN or any third-party font/script CDN. Self-host fonts
   (files in `public/fonts`, `@font-face` in our CSS).
