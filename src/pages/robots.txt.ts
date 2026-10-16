@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-import { isStage } from '../config';
+import { indexable, isStage } from '../config';
 
 // Only the production build's robots.txt is served (it lives at the site root).
 export const GET: APIRoute = () =>
@@ -8,7 +8,7 @@ export const GET: APIRoute = () =>
     [
       'User-agent: *',
       'Disallow: /stage/',
-      ...(isStage
+      ...(isStage || !indexable
         ? []
         : ['', 'Sitemap: https://tinaksenia.com/sitemap-index.xml']),
       '',

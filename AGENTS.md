@@ -38,7 +38,9 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
   last deploy of `stage` is green, fast-forwards `main` to `stage`, tags
   `vX.Y.Z`, publishes a GitHub Release and deploys production. Owner only.
   Use `major` for the public launch (`v1.0.0`).
-- `claude/`, `codex/`, `cursor/` branches are local scratch: never push them.
+- Deploy rebuilds both branches on every push to either, using the `deploy.yml`
+  of the pushed branch. So a change to `deploy.yml` affects production as soon
+  as it lands on `stage`, not at the next release. Review those PRs carefully.
 
 ## Content and privacy rules
 

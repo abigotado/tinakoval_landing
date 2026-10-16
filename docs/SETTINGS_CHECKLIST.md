@@ -13,6 +13,11 @@ dispatched, and the rulesets would block the first sync. So:
 3. Fast-forward `main` to `stage` once by hand (step 3 below).
 4. Only then apply the `main` ruleset and switch Pages.
 
+Until step 5 is done the Deploy workflow cannot publish (Pages is still on the
+legacy `gh-pages` source), and any Deploy run before step 3 fails at setup-node
+because `main` has no `.nvmrc` or lockfile yet. Both are expected: after step 5,
+run **Deploy** once by hand.
+
 ## 1. Create `stage`
 
 ```bash
@@ -40,15 +45,18 @@ gh api -X PATCH "repos/$REPO/git/refs/heads/main" \
 
 ## 4. Allow `stage` to deploy to the `github-pages` environment
 
-The environment only accepts `main` by default; the deploy workflow also runs
-on `stage`.
+The environment already exists and currently allows only `gh-pages`. Deploys
+run from `main` and `stage`, so allow both (list first with
+`gh api repos/$REPO/environments/github-pages/deployment-branch-policies`):
 
 ```bash
-gh api -X POST "repos/$REPO/environments/github-pages/deployment-branch-policies" \
-  -f name=stage -f type=branch
+for b in main stage; do
+  gh api -X POST "repos/$REPO/environments/github-pages/deployment-branch-policies" \
+    -f name=$b -f type=branch
+done
 ```
 
-(If the environment does not exist yet, run step 5 first and retry.)
+Remove the `gh-pages` policy after step 8 (use the policy id from the list).
 
 ## 5. Pages: GitHub Actions + custom domain
 
@@ -106,8 +114,23 @@ JSON
 ## 7. Ruleset: `main`
 
 No direct pushes, no deletion, no force push, linear history. The only bypass
-is the GitHub Actions app (id 15368, confirmed via `gh api apps/github-actions`),
-so `release.yml` can fast-forward `main`.
+is a deploy key used by `release.yml` to fast-forward `main`. A deploy key is
+needed instead of `GITHUB_TOKEN` because that token can never update commits
+touching `.github/workflows/` (Dependabot bumps do), and its pushes would not
+trigger Deploy.
+
+First create the key and the secret (the private key never leaves your machine
+except into the secret):
+
+```bash
+ssh-keygen -t ed25519 -N '' -C release-deploy-key -f ./release_key
+gh api -X POST "repos/$REPO/keys" -f title=release-deploy-key \
+  -f key="$(cat ./release_key.pub)" -F read_only=false
+gh secret set RELEASE_DEPLOY_KEY --repo "$REPO" < ./release_key
+rm ./release_key ./release_key.pub
+```
+
+Then the ruleset:
 
 ```bash
 gh api -X POST "repos/$REPO/rulesets" --input - <<'JSON'
@@ -116,9 +139,7 @@ gh api -X POST "repos/$REPO/rulesets" --input - <<'JSON'
   "target": "branch",
   "enforcement": "active",
   "conditions": { "ref_name": { "include": ["refs/heads/main"], "exclude": [] } },
-  "bypass_actors": [
-    { "actor_id": 15368, "actor_type": "Integration", "bypass_mode": "always" }
-  ],
+  "bypass_actors": [{ "actor_type": "DeployKey", "bypass_mode": "always" }],
   "rules": [
     { "type": "deletion" },
     { "type": "non_fast_forward" },
@@ -129,14 +150,15 @@ gh api -X POST "repos/$REPO/rulesets" --input - <<'JSON'
 JSON
 ```
 
-Not verified end to end: whether GitHub accepts the Actions app as a bypass
-actor on a personal repository, and whether a `GITHUB_TOKEN` push honours it.
-If the API rejects the ruleset, or the first **Release** run fails with a
-protected-branch error, fall back to a deploy key: generate a key pair, add the
-public key under Settings → Deploy keys with write access, add it as a ruleset
-bypass actor (`DeployKey`), store the private key as the secret
-`RELEASE_DEPLOY_KEY`, and give the checkout step in `release.yml`
-`ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}`.
+Not verified end to end: that GitHub accepts a `DeployKey` bypass actor without
+an `actor_id` for this repository. If the API rejects the payload, add the deploy
+key as a bypass actor in Settings → Rules → main instead. The first **Release**
+run is the real test.
+
+Also note: Dependabot _security_ updates ignore `target-branch` and open PRs
+against the default branch (`main`), where the ruleset blocks them. Either turn
+off Dependabot security updates (Settings → Advanced Security) or make `stage`
+the default branch (Settings → Branches).
 
 ## 8. Remove the legacy `gh-pages` branch
 

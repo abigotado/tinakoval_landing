@@ -5,11 +5,15 @@
 # the base is v0.0.0, so the first run gives v0.0.1 (patch), v0.1.0 (minor) or
 # v1.0.0 (major). Use `major` for the public launch (v1.0.0).
 #
-# Requirements (see docs/SETTINGS_CHECKLIST.md):
-#   * The main ruleset must list "GitHub Actions" (integration id 15368) as a
-#     bypass actor, otherwise the push to main is rejected.
-#   * Pushes made with GITHUB_TOKEN do not trigger other workflows, so this
-#     workflow dispatches deploy.yml itself after pushing.
+# The push to main uses a deploy key (secret RELEASE_DEPLOY_KEY), not
+# GITHUB_TOKEN, because GITHUB_TOKEN can never push commits that touch
+# .github/workflows/ (Dependabot bumps do), and its pushes do not trigger other
+# workflows. A deploy-key push triggers deploy.yml through its `push: main`
+# trigger. The key must be a bypass actor of the main ruleset; setup is in
+# docs/SETTINGS_CHECKLIST.md.
+#
+# Re-running after a partial failure resumes: if main already equals stage but
+# no tag points at it yet, the push is skipped and the tag/release is created.
 name: Release
 
 on:
@@ -30,7 +34,7 @@ permissions: {}
 jobs:
   release:
     name: release
-    if: github.actor == github.repository_owner
+    if: github.triggering_actor == github.repository_owner
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -45,24 +49,32 @@ jobs:
           ref: main
           fetch-depth: 0
           fetch-tags: true
-      - name: Verify stage is green and ahead of main
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
+      - name: Verify stage is green and ready to release
         run: |
           set -euo pipefail
           git fetch origin stage
           stage_sha=$(git rev-parse origin/stage)
-          read -r conclusion run_sha < <(gh run list --workflow deploy.yml --branch stage \
-            --limit 1 --json conclusion,headSha --jq '.[0] | "\(.conclusion) \(.headSha)"')
-          if [ "$run_sha" != "$stage_sha" ] || [ "$conclusion" != "success" ]; then
-            echo "::error::Latest deploy run on stage is '$conclusion' for ${run_sha:0:7}; stage head is ${stage_sha:0:7}. Wait for a green deploy of the current stage head."
+          run=$(gh run list --workflow deploy.yml --branch stage --limit 1 \
+            --json status,conclusion,headSha --jq '.[0] | "\(.headSha) \(.status) \(.conclusion)"')
+          read -r run_sha run_status run_conclusion <<< "$run"
+          if [ "$run_sha" != "$stage_sha" ] || [ "$run_status" != "completed" ] || [ "$run_conclusion" != "success" ]; then
+            echo "::error::Latest deploy run on stage: ${run_sha:0:7} is $run_status/$run_conclusion; stage head is ${stage_sha:0:7}. Wait for a green deploy of the current stage head."
             exit 1
           fi
           if [ "$(git rev-parse origin/main)" = "$stage_sha" ]; then
-            echo "::error::main already equals stage, nothing to release."
-            exit 1
-          fi
-          if ! git merge-base --is-ancestor origin/main origin/stage; then
-            echo "::error::main is not an ancestor of stage, so it cannot be fast-forwarded. Merge main into stage through a PR first."
-            exit 1
+            if [ -n "$(git tag --points-at "$stage_sha" --list 'v[0-9]*.[0-9]*.[0-9]*')" ]; then
+              echo "::error::main already equals stage and is tagged, nothing to release."
+              exit 1
+            fi
+            echo "main already equals stage but is untagged: resuming a partial release."
+            echo "PUSH_NEEDED=false" >> "$GITHUB_ENV"
+          else
+            if ! git merge-base --is-ancestor origin/main origin/stage; then
+              echo "::error::main has commits that stage lacks, so it cannot be fast-forwarded. Bring stage up to date with main before releasing."
+              exit 1
+            fi
+            echo "PUSH_NEEDED=true" >> "$GITHUB_ENV"
           fi
           echo "STAGE_SHA=$stage_sha" >> "$GITHUB_ENV"
       - name: Compute next version
@@ -80,11 +92,12 @@ jobs:
           echo "PREVIOUS=$latest" >> "$GITHUB_ENV"
           echo "VERSION=v$major.$minor.$patch" >> "$GITHUB_ENV"
       - name: Fast-forward main to stage
+        if: env.PUSH_NEEDED == 'true'
         run: git push origin "${STAGE_SHA}:refs/heads/main"
       - name: Tag and publish GitHub Release
-        run: |
-          gh release create "$VERSION" --target "$STAGE_SHA" --title "$VERSION" --generate-notes
-      - name: Deploy production
+        run: gh release create "$VERSION" --target "$STAGE_SHA" --title "$VERSION" --generate-notes
+      - name: Deploy production when the push did not
+        if: env.PUSH_NEEDED == 'false'
         run: gh workflow run deploy.yml --ref main
       - name: Summary
         run: |
@@ -95,4 +108,6 @@ jobs:
             echo "| Released | \`$VERSION\` ($BUMP) |"
             echo "| Commit | \`${STAGE_SHA:0:7}\` |"
             echo "| Release | $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION |"
+            echo ''
+            echo "Production deploys from the \`push: main\` trigger of Deploy (dispatched by hand when resuming)."
           } >> "$GITHUB_STEP_SUMMARY"
