@@ -47,8 +47,11 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 
 ## Content and privacy rules
 
-- Never publish the diploma appendix PDF or any personal data (documents,
-  phone, address, client details, photos of clients).
+- Never publish the diploma appendix PDF, identity documents, her date of
+  birth or maiden name, or any client data (names, stories, photos).
+- Her approved public contacts shown in the approved design (messengers and
+  social links, including the Meta footnote) are allowed and must stay on the
+  page. Do not add contacts that are not in the design.
 - No analytics or tracking scripts without a consent banner first.
 - No Google Fonts CDN or any third-party font/script CDN. Self-host fonts
   (files in `public/fonts`, `@font-face` in our CSS).
