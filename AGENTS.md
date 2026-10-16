@@ -47,8 +47,12 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 
 ## Content and privacy rules
 
-- Never publish the diploma appendix PDF or any personal data (documents,
-  phone, address, client details, photos of clients).
+- Never publish the diploma appendix PDF, identity documents, her date of birth
+  or maiden name, or any client data (names, messages, photos, details).
+- Her approved public contacts are allowed and must stay on the page:
+  Telegram @tinakseniya, WhatsApp +7 968 749-57-49, Instagram @tinaksenia (with
+  the Meta footnote). The list of what may be published is
+  `docs/specs/landing.md` §4.
 - No analytics or tracking scripts without a consent banner first.
 - No Google Fonts CDN or any third-party font/script CDN. Self-host fonts
   (files in `public/fonts`, `@font-face` in our CSS).
