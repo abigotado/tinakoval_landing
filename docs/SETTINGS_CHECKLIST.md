@@ -154,7 +154,7 @@ This push triggers Deploy for `main`. Then run Deploy once more on `stage`, so
 the `stage` head has the green Deploy run that Release checks for:
 
 ```bash
-gh workflow run deploy.yml --ref stage
+gh workflow run deploy.yml --repo "$REPO" --ref stage
 ```
 
 ## 7. Rulesets: `main`
@@ -213,7 +213,7 @@ gh api -X PUT "repos/$REPO/rulesets/$RID" -f enforcement=disabled
 gh api -X PATCH "repos/$REPO/git/refs/heads/main" \
   -f sha="$(gh api repos/$REPO/git/ref/heads/stage --jq .object.sha)" -F force=false
 gh api -X PUT "repos/$REPO/rulesets/$RID" -f enforcement=active
-gh workflow run release.yml --ref stage -f bump=patch
+gh workflow run release.yml --repo "$REPO" --ref stage -f bump=patch
 ```
 
 ## 8. Remove the legacy `gh-pages` branch
