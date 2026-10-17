@@ -345,7 +345,7 @@ const jsonLd = {
             {contact.cta}
           </ExternalLink>
           <p class="contact-handle">
-            {contacts.telegram.label}
+            {`${contacts.telegram.label} `}
             <b>{contacts.telegram.handle}</b>
           </p>
         </div>
@@ -858,7 +858,6 @@ const jsonLd = {
   }
 
   .contact-handle b {
-    margin-left: 6px;
     color: var(--ink);
     font-weight: 600;
   }
@@ -890,17 +889,17 @@ const jsonLd = {
   }
 
   /* Narrow desktop: keep the photo beside the text. */
-  @media (max-width: 1099px) and (min-width: 860px) {
+  @media (max-width: 1149px) and (min-width: 860px) {
     .hero {
       gap: 48px 40px;
     }
 
     .hero-text {
-      flex-basis: 380px;
+      flex-basis: 360px;
     }
 
     .arch {
-      flex-basis: 340px;
+      flex-basis: 320px;
     }
   }
 

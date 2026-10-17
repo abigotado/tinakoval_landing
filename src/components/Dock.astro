@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL;
 
 <div class="dock" data-dock>
   <p class="dock-price">
-    {dock.label}
+    {`${dock.label} `}
     <b>{price.amount}</b>
   </p>
   <a class="btn btn-primary dock-cta" href={`${base}#contact`}>

@@ -30,7 +30,7 @@
   color-scheme: light;
 }
 
-@media (max-width: 1099px) and (min-width: 860px) {
+@media (max-width: 1149px) and (min-width: 860px) {
   :root {
     /* The header nav wraps to a second row here (Header.astro). */
     --header-h: 107px;
