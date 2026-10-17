@@ -14,6 +14,7 @@ export const contacts = {
     label: 'Telegram',
     handle: '@tinakseniya',
     href: 'https://t.me/tinakseniya',
+    link: 't.me/tinakseniya',
   },
   // Telegram is the only public contact (D-10): never add a phone number,
   // WhatsApp or Instagram to the site.
@@ -218,7 +219,7 @@ export const contact = {
   title: 'Напишите, когда будете готовы',
   cta: 'Написать в Telegram',
   qrHint: 'Или наведите камеру телефона на код',
-  qrAlt: 'QR-код со ссылкой на Telegram @tinakseniya: t.me/tinakseniya',
+  qrAlt: 'QR-код со ссылкой на Telegram @tinakseniya',
 };
 
 export const dock = {

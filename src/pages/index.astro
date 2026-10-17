@@ -352,7 +352,10 @@ const jsonLd = {
       </div>
       <figure class="contact-qr">
         <TelegramQr role="img" aria-label={contact.qrAlt} />
-        <figcaption>{contact.qrHint}</figcaption>
+        <figcaption>
+          {`${contact.qrHint} `}
+          <b>{contacts.telegram.link}</b>
+        </figcaption>
       </figure>
     </section>
   </main>
@@ -434,7 +437,7 @@ const jsonLd = {
     aspect-ratio: 4 / 5;
     overflow: hidden;
     border-radius: 999px 999px 20px 20px;
-    background: linear-gradient(180deg, var(--sage) 0%, #d9cedb 100%);
+    background: linear-gradient(180deg, var(--olive) 0%, #d9cedb 100%);
   }
 
   .arch::after {
@@ -472,7 +475,7 @@ const jsonLd = {
 
   /* Bands */
   .band {
-    background: var(--sage);
+    background: var(--olive);
   }
 
   /* С чем помогаю */
@@ -494,7 +497,7 @@ const jsonLd = {
     flex-direction: column;
     gap: 8px;
     padding: 26px 0 32px;
-    border-top: 1px solid var(--line-sage);
+    border-top: 1px solid var(--line-olive);
   }
 
   .help-list h3 {
@@ -653,7 +656,7 @@ const jsonLd = {
     padding: 12px;
     border: 1px solid var(--line);
     border-radius: 12px;
-    background: var(--paper-2);
+    background: var(--paper);
   }
 
   .doc-thumb {
@@ -871,6 +874,12 @@ const jsonLd = {
     font-size: 13px;
     line-height: 1.4;
     text-align: center;
+  }
+
+  .contact-qr b {
+    display: block;
+    color: var(--ink);
+    font-weight: 600;
   }
 
   .contact-qr :global(svg) {

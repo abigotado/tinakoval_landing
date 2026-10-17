@@ -1,9 +1,8 @@
 /* Design В1 «тихая комната» (docs/specs/landing.md §2). */
 
 :root {
-  --paper: #f4f2f1;
-  --paper-2: #f6f2ef;
-  --sage: #e8ece5;
+  --paper: #f1e6c9;
+  --olive: #e4d9b7;
   --plum: #6b4e71;
   --plum-dark: #5a3f60;
   --ink: #2a2330;
@@ -15,7 +14,7 @@
   --journal: #f7f3e8;
   --line: #d9d2d6;
   --line-strong: #c9c0c6;
-  --line-sage: #c9cfc4;
+  --line-olive: #c9cfc4;
 
   --serif: 'Spectral', 'Spectral Fallback', Georgia, serif;
   --sans:
