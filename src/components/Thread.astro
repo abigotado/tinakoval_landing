@@ -9,7 +9,8 @@ const POINTS = 480;
 
 function threadPath(turns: number, stretch: number): string {
   let d = '';
-  for (let i = 0; i <= POINTS; i++) {
+  // After t = 0.78 the loops have faded out; one straight segment ends it.
+  for (let i = 0; i <= POINTS * 0.78; i++) {
     const t = i / POINTS;
     const fade = Math.pow(Math.max(0, 1 - t / 0.78), 1.6);
     const r = 34 * fade;
@@ -18,7 +19,7 @@ function threadPath(turns: number, stretch: number): string {
     const y = H / 2 + r * Math.sin(a) + 6 * fade * Math.sin(t * 37);
     d += `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`;
   }
-  return d;
+  return `${d}L${W - 6} ${H / 2}`;
 }
 
 const desktop = threadPath(15, 1.15);

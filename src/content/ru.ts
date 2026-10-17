@@ -15,25 +15,31 @@ export const contacts = {
     handle: '@tinakseniya',
     href: 'https://t.me/tinakseniya',
   },
-  whatsapp: {
-    label: 'WhatsApp',
-    handle: '+7 968 749-57-49',
-    href: 'https://wa.me/79687495749',
-  },
-  instagram: {
-    // The asterisk points to the Meta footnote in the footer (AC-CONTACT-3).
-    label: 'Instagram*',
-    handle: '@tinaksenia',
-    href: 'https://instagram.com/tinaksenia',
-  },
+  // Telegram is the only public contact (D-10): never add a phone number,
+  // WhatsApp or Instagram to the site.
   email: 'tinakseniya@mail.ru',
 };
 
+const rub = 5000;
+const usd = 50;
+
 export const price = {
-  amount: '5000 ₽ / 50 $',
-  rub: '5000 ₽',
-  usd: '50 $',
+  rubValue: rub,
+  usdValue: usd,
+  amount: `${rub} ₽ / ${usd} $`,
+  rub: `${rub} ₽`,
+  usd: `${usd} $`,
+  /** Read instead of the slash by screen readers. */
+  or: 'или',
   duration: '60–80 минут',
+};
+
+/** Structured data (JSON-LD) on the main page. */
+export const schema = {
+  jobTitle: 'Психолог',
+  university: 'Московский институт психоанализа',
+  areaServed: 'Весь мир (онлайн)',
+  service: `Онлайн-консультация психолога, ${price.duration}`,
 };
 
 export const meta = {
@@ -174,7 +180,7 @@ export const steps = {
   items: [
     {
       title: 'Напишите мне',
-      text: 'В Telegram или WhatsApp. Коротко опишите, что вас беспокоит, и выберите удобное время.',
+      text: 'В Telegram. Коротко опишите, что вас беспокоит, и выберите удобное время.',
     },
     {
       title: 'Первая встреча',
@@ -210,6 +216,9 @@ export const materials = {
 export const contact = {
   eyebrow: 'Запись',
   title: 'Напишите, когда будете готовы',
+  cta: 'Написать в Telegram',
+  qrHint: 'Или наведите камеру телефона на код',
+  qrAlt: 'QR-код со ссылкой на Telegram @tinakseniya: t.me/tinakseniya',
 };
 
 export const dock = {
@@ -220,8 +229,6 @@ export const dock = {
 export const footer = {
   disclaimer:
     'Консультации психолога не являются медицинской услугой и не заменяют экстренную помощь. При угрозе жизни звоните 112 (Россия) или 911 (Аргентина).',
-  metaNote:
-    '* Instagram принадлежит компании Meta, признанной в России экстремистской организацией и запрещённой.',
   policy: 'Политика конфиденциальности',
 };
 
@@ -284,7 +291,7 @@ export const policy = {
       title: '6. Третьи лица',
       paragraphs: [
         'Я никому не передаю ваши данные.',
-        'Мессенджеры (Telegram, WhatsApp, Instagram*) обрабатывают переписку по своим правилам, их серверы могут находиться за пределами России.',
+        'Telegram обрабатывает переписку по своим правилам, его серверы находятся за пределами России.',
       ],
     },
     {
