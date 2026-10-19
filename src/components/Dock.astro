@@ -1,0 +1,127 @@
+---
+import { dock, price } from '../content/ru';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="dock" data-dock>
+  <p class="dock-price">
+    {`${dock.label} `}
+    <b>{price.amount}</b>
+  </p>
+  <a class="btn btn-primary dock-cta" href={`${base}#contact`}>
+    {dock.cta}
+  </a>
+</div>
+
+<script>
+  // Phone booking bar (§5.14): hide it while the contact section is on
+  // screen. Without JS it simply stays visible (AC-DOCK-2).
+  const bar = document.querySelector<HTMLElement>('[data-dock]');
+  const contact = document.getElementById('contact');
+
+  if (bar) {
+    // Real bar height (0 when hidden on wide screens) for the footer padding
+    // and scroll offsets; the CSS value is the fallback.
+    new ResizeObserver(() => {
+      document.documentElement.style.setProperty(
+        '--dock-h',
+        `${bar.offsetHeight}px`,
+      );
+    }).observe(bar, { box: 'border-box' });
+  }
+
+  if (bar && contact && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      const hidden = entry?.isIntersecting ?? false;
+      bar.toggleAttribute('data-hidden', hidden);
+      bar.toggleAttribute('inert', hidden);
+    }).observe(contact);
+  }
+</script>
+
+<style>
+  .dock {
+    display: none;
+  }
+
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
+    .dock {
+      position: fixed;
+      z-index: 10;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.875rem;
+      padding: 0.75rem max(1rem, env(safe-area-inset-right, 0px))
+        calc(0.75rem + env(safe-area-inset-bottom, 0px))
+        max(1rem, env(safe-area-inset-left, 0px));
+      border-top: 1px solid var(--line);
+      background: rgb(241 230 201 / 0.94);
+      transition:
+        transform 0.25s ease,
+        opacity 0.25s ease,
+        visibility 0.25s;
+    }
+
+    .dock[data-hidden] {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(100%);
+    }
+  }
+
+  .dock-price {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    color: var(--muted);
+  }
+
+  .dock-price b {
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .dock-cta {
+    flex: 1 1 10rem;
+    min-width: 0;
+    max-width: 24rem;
+    margin-left: auto;
+    min-height: 3.25rem;
+    padding: 0 1rem;
+  }
+
+  @media (orientation: landscape) and (max-height: 31.25em) {
+    .dock {
+      padding-top: 0.5rem;
+      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .dock-cta {
+      min-height: 2.75rem;
+    }
+  }
+
+  /* A large system font on a phone: the button alone, the price is on the page. */
+  @media (max-width: 19.9375em) {
+    .dock-price {
+      display: none;
+    }
+  }
+
+  /* Very short screen with a large system font: the bar sits at the end of
+     the page instead of covering it. */
+  @media (max-height: 19.9375em) {
+    .dock {
+      position: static;
+    }
+  }
+</style>

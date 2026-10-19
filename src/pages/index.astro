@@ -1,23 +1,1213 @@
 ---
+import { getImage, Image, Picture } from 'astro:assets';
+
+import certificate from '../assets/certificate-icta.jpg';
+import diploma from '../assets/diploma-appendix-p1.jpg';
+import portrait from '../assets/portrait.jpg';
+import TelegramQr from '../assets/telegram-qr.svg';
+import Dock from '../components/Dock.astro';
+import ExternalLink from '../components/ExternalLink.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Thread from '../components/Thread.astro';
+import {
+  about,
+  contact,
+  contacts,
+  education,
+  familiar,
+  help,
+  hero,
+  materials,
+  meta,
+  person,
+  price,
+  pricing,
+  privacy,
+  schema,
+  steps,
+} from '../content/ru';
 import Base from '../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+
+// Education scans open larger by a plain link to the file (§5.8, no gallery).
+// Only page 1 of the diploma appendix and the ICTA certificate (AC-EDU-1).
+const documents = await Promise.all(
+  [diploma, certificate].map(async (src, i) => ({
+    src,
+    full: await getImage({
+      src,
+      width: Math.min(src.width, 1100),
+      format: 'webp',
+      quality: 60,
+    }),
+    position: i === 0 ? '50% 0%' : '50% 50%',
+    ...education.items[i]!,
+  })),
+);
+
+const siteUrl = new URL(base, Astro.site).href;
+const photo = await getImage({ src: portrait, width: 600, format: 'jpg' });
+const photoUrl = new URL(photo.src, Astro.site).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${siteUrl}#person`,
+      name: person.name,
+      jobTitle: schema.jobTitle,
+      image: photoUrl,
+      url: siteUrl,
+      alumniOf: {
+        '@type': 'CollegeOrUniversity',
+        name: schema.university,
+      },
+      sameAs: [contacts.telegram.href],
+    },
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${siteUrl}#service`,
+      name: meta.title,
+      description: meta.description,
+      url: siteUrl,
+      image: photoUrl,
+      founder: { '@id': `${siteUrl}#person` },
+      areaServed: schema.areaServed,
+      availableLanguage: 'ru',
+      priceRange: price.amount,
+      makesOffer: [
+        { currency: 'RUB', amount: price.rubValue },
+        { currency: 'USD', amount: price.usdValue },
+      ].map(({ currency, amount }) => ({
+        '@type': 'Offer',
+        price: amount,
+        priceCurrency: currency,
+        itemOffered: { '@type': 'Service', name: schema.service },
+      })),
+      sameAs: [contacts.telegram.href],
+    },
+  ],
+};
 ---
 
-<Base
-  title="Ксения Коваленко · психолог"
-  description="Ксения Коваленко — психолог. Сайт скоро откроется."
->
-  <main>
-    <h1>Ксения Коваленко · психолог</h1>
-    <p>Сайт скоро откроется.</p>
+<Base title={meta.title} description={meta.description}>
+  <script
+    slot="head"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(jsonLd)}
+  />
+  <Header />
+
+  <main id="main">
+    <section id="top" class="container hero">
+      <div class="hero-text">
+        <p class="eyebrow">{hero.eyebrow}</p>
+        <h1 class="hero-title">
+          {`${hero.titleLine1} `}
+          <br />
+          {hero.titleLine2} <em>{hero.titleAccent}</em>
+        </h1>
+        <p class="hero-subtitle">{hero.subtitle}</p>
+        <p class="hero-lead">{hero.lead}</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary hero-cta" href={`${base}#contact`}>
+            {hero.cta}
+          </a>
+          <p class="hero-price">
+            {price.duration} · <b>{price.rub}</b> / <b>{price.usd}</b>
+          </p>
+        </div>
+      </div>
+      <div class="arch">
+        <Picture
+          src={portrait}
+          formats={['avif', 'webp']}
+          widths={[200, 400, 600, 840]}
+          sizes="(orientation: landscape) and (max-height: 500px) 280px, (max-width: 599px) 200px, (max-width: 859px) 280px, 420px"
+          alt={hero.photoAlt}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </section>
+
+    <Thread />
+
+    <section class="container section familiar">
+      <p class="eyebrow">{familiar.eyebrow}</p>
+      <blockquote>
+        <p>
+          {familiar.quoteStart} <em>{familiar.quoteAccent}</em>
+          {familiar.quoteEnd}
+        </p>
+      </blockquote>
+    </section>
+
+    <section id="help" class="band" aria-labelledby="help-title">
+      <div class="container section">
+        <p class="eyebrow">{help.eyebrow}</p>
+        <h2 id="help-title" class="h2 help-title">
+          {help.title}
+        </h2>
+        <ul class="help-list">
+          {help.items.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section id="about" class="container section" aria-labelledby="about-title">
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h2 id="about-title" class="h2">
+        {about.title}
+      </h2>
+      <ul class="pillars">
+        {about.pillars.map((pillar) => (
+          <li>
+            <p class="pillar-figure" aria-hidden="true">
+              {pillar.figure}
+              {pillar.unit && <span>{pillar.unit}</span>}
+            </p>
+            <h3>
+              <span class="visually-hidden">
+                {`${pillar.figure} ${pillar.unit} `}
+              </span>
+              {pillar.title}
+            </h3>
+            <p>{pillar.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section id="privacy" class="night" aria-labelledby="privacy-title">
+      <div class="container section night-inner">
+        <div class="night-text">
+          <svg
+            class="notebook"
+            aria-hidden="true"
+            width="64"
+            height="64"
+            viewBox="0 0 64 64"
+            focusable="false"
+          >
+            <path d="M12 14C22 12.8 34 12.6 42 13.5 43.2 26 43.4 40 42.5 53 32 54 22 53.8 12.8 52.6 11.6 40 11.4 26 12 14Z"></path>
+            <path d="M17.4 14C17.9 27 17.8 40 17.6 53"></path>
+            <path d="M22.5 22C25 20.6 27.8 23.2 30.6 21.6 32.8 20.6 35 22.2 37.5 21.4"></path>
+            <path d="M22.5 29C25 27.8 27.8 30.3 30.6 28.8 32.6 27.9 34 29.2 35.5 28.6"></path>
+            <path d="M22.5 36C24.6 34.9 26.8 37.1 29 35.9"></path>
+            <path d="M33.6 51.4 52 25C53 23.6 55.2 23.2 56.4 24.3 57.6 25.4 57.7 27.4 56.7 28.7L38.2 54.4 32.4 56.6Z"></path>
+            <path d="M33.6 51.4 38.2 54.4M49.4 28.7 53.9 31.9"></path>
+          </svg>
+          <p class="eyebrow">{privacy.eyebrow}</p>
+          <h2 id="privacy-title" class="h2">
+            {privacy.title}
+          </h2>
+          <ul class="night-list">
+            {privacy.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <figure class="journal">
+          <figcaption class="visually-hidden">
+            {privacy.journalLabel}
+          </figcaption>
+          <p>
+            {privacy.journal.map((line) => (
+              <span>{line}</span>
+            ))}
+          </p>
+        </figure>
+      </div>
+    </section>
+
+    <section
+      id="education"
+      class="container section education"
+      aria-labelledby="education-title"
+    >
+      <h2 id="education-title" class="eyebrow">
+        {education.eyebrow}
+      </h2>
+      <ul class="docs">
+        {documents.map((doc) => (
+          <li class="doc">
+            <a class="doc-thumb" href={doc.full.src}>
+              <Image
+                src={doc.src}
+                width={112}
+                widths={[112, 224, 336]}
+                sizes="112px"
+                alt={doc.alt}
+                style={`object-position: ${doc.position}`}
+              />
+              <span class="visually-hidden">{education.open}</span>
+            </a>
+            <div class="doc-text">
+              <p class="doc-meta">{doc.meta}</p>
+              <h3>{doc.title}</h3>
+              <p>{doc.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="container steps" aria-labelledby="steps-title">
+      <p class="eyebrow">{steps.eyebrow}</p>
+      <h2 id="steps-title" class="h2">
+        {steps.title}
+      </h2>
+      <ol class="steps-list">
+        {steps.items.map((step, i) => (
+          <li>
+            <span class="step-number" aria-hidden="true">
+              {i + 1}
+            </span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section id="price" class="band" aria-labelledby="price-title">
+      <div class="container price">
+        <div>
+          <h2 id="price-title" class="eyebrow">
+            {pricing.eyebrow}
+          </h2>
+          <p class="price-amount">
+            {price.rub}
+            <span aria-hidden="true">/</span>
+            <span class="visually-hidden">{` ${price.or} `}</span>
+            {price.usd}
+          </p>
+          <ul class="price-details">
+            {pricing.details.map((detail) => (
+              <li>{detail}</li>
+            ))}
+          </ul>
+        </div>
+        <a class="btn btn-primary price-cta" href={`${base}#contact`}>
+          {pricing.cta}
+        </a>
+      </div>
+    </section>
+
+    <section
+      id="materials"
+      class="container section"
+      aria-labelledby="materials-title"
+    >
+      <p class="eyebrow">{materials.eyebrow}</p>
+      <h2 id="materials-title" class="h2">
+        {materials.title}
+      </h2>
+      <article class="book">
+        <div class="book-cover" aria-hidden="true">
+          <b>{materials.book.cover}</b>
+          <span>
+            <span class="book-cover-kind">{materials.book.coverKind}</span>
+            {materials.book.coverSource}
+          </span>
+        </div>
+        <div class="book-text">
+          <h3>{materials.book.title}</h3>
+          <p>{materials.book.text}</p>
+          <ExternalLink class="book-link" href={materials.book.href}>
+            {materials.book.link}
+          </ExternalLink>
+        </div>
+      </article>
+    </section>
+
+    <section
+      id="contact"
+      class="container contact"
+      aria-labelledby="contact-title"
+    >
+      <div>
+        <p class="eyebrow">{contact.eyebrow}</p>
+        <h2 id="contact-title" class="contact-title">
+          {contact.title}
+        </h2>
+        <div class="contact-actions">
+          <ExternalLink class="btn btn-primary" href={contacts.telegram.href}>
+            {contact.cta}
+          </ExternalLink>
+          <p class="contact-handle">
+            {`${contacts.telegram.label} `}
+            <b>{contacts.telegram.handle}</b>
+          </p>
+        </div>
+      </div>
+      <figure class="contact-qr">
+        <TelegramQr role="img" aria-label={contact.qrAlt} />
+        <figcaption>
+          {`${contact.qrHint} `}
+          <b>{contacts.telegram.link}</b>
+        </figcaption>
+      </figure>
+    </section>
   </main>
+
+  <Footer withDock />
+  <Dock />
 </Base>
 
 <style>
-  main {
-    font-family: system-ui, sans-serif;
-    max-width: 40rem;
-    margin: 4rem auto;
-    padding: 0 1rem;
-    color: #222;
+  /* Hero */
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3rem 5.5rem;
+    padding-block: 5.5rem 1rem;
+  }
+
+  .hero-text {
+    flex: 1 1 32.5rem;
+    min-width: 0;
+  }
+
+  .hero-title {
+    margin-top: 1.375rem;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3.25rem, 6.4vw, 5.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    hyphens: manual;
+  }
+
+  .hero-title em {
+    color: var(--plum);
+  }
+
+  .hero-subtitle {
+    margin-top: 1rem;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    line-height: 1.25;
+    color: var(--muted);
+  }
+
+  .hero-lead {
+    max-width: 34em;
+    margin-top: 1.875rem;
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.875rem 1.5rem;
+    margin-top: 2.25rem;
+  }
+
+  .hero-price {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .hero-price b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .arch {
+    position: relative;
+    flex: 0 1 26.25rem;
+    min-width: 16.25rem;
+    max-width: 100%;
+    margin-inline: auto;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 999px 999px 20px 20px;
+    background: linear-gradient(180deg, var(--olive) 0%, #d9cedb 100%);
+  }
+
+  .arch::after {
+    content: '';
+    position: absolute;
+    inset: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-radius: 999px 999px 14px 14px;
+    pointer-events: none;
+  }
+
+  .arch :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 52% 28%;
+  }
+
+  /* Если вам знакомо */
+  .familiar blockquote {
+    max-width: 21em;
+    margin-top: 1.5rem;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2rem, 3.6vw, 3.25rem);
+    line-height: 1.22;
+    text-wrap: pretty;
+  }
+
+  .familiar em {
+    color: var(--plum);
+  }
+
+  /* Bands */
+  .band {
+    background: var(--olive);
+  }
+
+  /* С чем помогаю */
+  .help-title {
+    max-width: 16em;
+  }
+
+  .help-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 4rem;
+    margin-top: 3.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .help-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.625rem 0 2rem;
+    border-top: 1px solid var(--line-olive);
+  }
+
+  .help-list h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.875rem;
+    line-height: 1.15;
+  }
+
+  .help-list p,
+  .pillars p:not(.pillar-figure),
+  .steps-list p,
+  .book-text p {
+    max-width: 30em;
+    color: var(--muted);
+  }
+
+  /* Обо мне */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(13.75rem, 100%), 1fr));
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pillars li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .pillar-figure {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 5.25rem;
+    line-height: 1;
+    color: var(--plum);
+  }
+
+  .pillar-figure span {
+    margin-left: 0.5rem;
+    font-size: 1.875rem;
+    color: var(--muted);
+  }
+
+  .pillars h3,
+  .steps-list h3 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  /* Конфиденциальность */
+  .night {
+    background: var(--night);
+    color: var(--night-text);
+  }
+
+  .night-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: 3.5rem 5rem;
+  }
+
+  .night .eyebrow {
+    color: var(--night-muted);
+  }
+
+  .notebook {
+    margin-bottom: 1.25rem;
+    color: var(--night-accent);
+  }
+
+  .notebook path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .night-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    max-width: 32em;
+    margin-top: 2rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .night-list li {
+    position: relative;
+    padding-left: 1.75rem;
+  }
+
+  .night-list li::before {
+    content: '';
+    position: absolute;
+    top: 0.8em;
+    left: 0;
+    width: 0.875rem;
+    height: 1px;
+    background: var(--night-accent);
+  }
+
+  .journal {
+    position: relative;
+    padding: 2.25rem 2rem 2.5rem 3.5rem;
+    border-radius: 6px;
+    background-color: var(--journal);
+    background-image:
+      linear-gradient(
+        90deg,
+        transparent 2.4375rem,
+        #e3c9cf 2.4375rem 2.5rem,
+        transparent 0
+      ),
+      repeating-linear-gradient(
+        transparent 0 2.1875rem,
+        #e4dcc8 2.1875rem 2.25rem
+      );
+    background-position: 0 2.25rem;
+    color: var(--ink);
+    box-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.6);
+  }
+
+  .journal p {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--hand);
+    font-weight: 500;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    hyphens: manual;
+  }
+
+  /* Образование */
+  .education {
+    padding-bottom: 0;
+  }
+
+  .docs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(21.25rem, 100%), 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .doc {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+  }
+
+  .doc-thumb {
+    flex: none;
+    border-radius: 6px;
+  }
+
+  .doc-thumb :global(img) {
+    width: 7rem;
+    height: 4.875rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    object-fit: cover;
+  }
+
+  .doc-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .doc-meta {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .doc h3 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .doc-text p:last-child {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  /* Как проходит работа */
+  .steps {
+    padding-block: var(--section-y);
+  }
+
+  .steps-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem 3rem;
+    margin-top: 3.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding-top: 1.375rem;
+    border-top: 1px solid var(--ink);
+  }
+
+  .step-number {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 2.125rem;
+    line-height: 1;
+    color: var(--plum);
+  }
+
+  /* Стоимость */
+  .price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem 4rem;
+    padding-block: 6.5rem;
+  }
+
+  .price-amount {
+    margin-top: 1.125rem;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3.5rem, 6.4vw, 5.75rem);
+    line-height: 1;
+    font-variant-numeric: lining-nums tabular-nums;
+    hyphens: manual;
+  }
+
+  .price-amount span[aria-hidden] {
+    margin: 0 0.35em;
+    font-size: 0.5em;
+    color: var(--muted);
+  }
+
+  .price-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem 1.375rem;
+    margin-top: 1.125rem;
+    padding: 0;
+    list-style: none;
+    color: var(--muted);
+  }
+
+  /* Материалы */
+  .book {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.75rem;
+    max-width: 55rem;
+    margin-top: 3.5rem;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .book-cover {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 8rem;
+    aspect-ratio: 3 / 4;
+    padding: 0.8125rem;
+    border-radius: 4px 8px 8px 4px;
+    background: linear-gradient(160deg, #2b6fa3 0%, #1f5d8f 100%);
+    color: #fff;
+    font-size: 0.625rem;
+    line-height: 1.25;
+    box-shadow: 0 16px 30px -18px rgb(0 0 0 / 0.5);
+    hyphens: manual;
+  }
+
+  .book-cover b {
+    font-size: 0.8125rem;
+  }
+
+  .book-text {
+    flex: 1 1 22.5rem;
+    min-width: 0;
+  }
+
+  .book-text h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+
+  .book-text p {
+    max-width: 36em;
+    margin-top: 0.625rem;
+  }
+
+  .book-text :global(.book-link) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-top: 0.5rem;
+    color: var(--plum);
+    font-weight: 500;
+    text-underline-offset: 0.25rem;
+  }
+
+  /* Запись */
+  .contact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2.5rem 4rem;
+    padding-block: 2.5rem 6rem;
+  }
+
+  .contact-title {
+    max-width: 11em;
+    margin-top: 1.125rem;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .contact-handle {
+    color: var(--muted);
+  }
+
+  .contact-handle b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* The QR is for visitors on a computer; phones use the button (§5.12). */
+  .contact-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.625rem;
+    width: 11rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .contact-qr b {
+    display: block;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .contact-qr :global(svg) {
+    width: 11rem;
+    height: 11rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  /* Narrow desktop: keep the photo beside the text. */
+  @media (max-width: 71.8125em) and (min-width: 53.75em) {
+    .hero {
+      gap: 3rem 2.5rem;
+    }
+
+    .hero-text {
+      flex-basis: 22.5rem;
+    }
+
+    .arch {
+      flex-basis: 20rem;
+    }
+  }
+
+  /* Tablet, phone and landscape phone. The photo stays beside the text until
+     the phone layout below stacks them. Display sizes are capped in vw so a
+     large system font still fits a narrow phone. */
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
+    .hero {
+      flex-wrap: nowrap;
+      gap: 2rem;
+      padding-block: 2rem 0.5rem;
+    }
+
+    .hero-text {
+      flex: 1 1 0;
+    }
+
+    .arch {
+      flex: 0 0 clamp(12.5rem, 32vw, 17.5rem);
+      min-width: 0;
+      border-radius: 999px 999px 16px 16px;
+    }
+
+    .arch::after {
+      inset: 0.5rem;
+      border-radius: 999px 999px 10px 10px;
+    }
+
+    .hero-title {
+      margin-top: 0.75rem;
+      font-size: min(3rem, 15vw);
+    }
+
+    .hero-subtitle {
+      margin-top: 0.625rem;
+      font-size: 1.375rem;
+    }
+
+    .hero-lead {
+      margin-top: 1.125rem;
+      font-size: 1.0625rem;
+    }
+
+    .hero-actions {
+      gap: 0.75rem 1.25rem;
+      margin-top: 1.75rem;
+    }
+
+    .hero-price {
+      font-size: 0.9375rem;
+    }
+
+    .familiar blockquote {
+      margin-top: 1.125rem;
+      font-size: min(1.8125rem, 9.1vw);
+      line-height: 1.24;
+    }
+
+    .help-list {
+      margin-top: 2.25rem;
+    }
+
+    .help-list li {
+      gap: 0.375rem;
+      padding: 1.25rem 0 1.5rem;
+    }
+
+    .help-list h3 {
+      font-size: 1.625rem;
+    }
+
+    .pillars,
+    .steps-list {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.75rem;
+      margin-top: 2.25rem;
+    }
+
+    .pillars li {
+      display: grid;
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: 0.25rem 1rem;
+      align-items: start;
+    }
+
+    .pillar-figure {
+      grid-row: span 2;
+      font-size: min(2.75rem, 13.75vw);
+    }
+
+    .pillar-figure span {
+      margin-left: 0.375rem;
+      font-size: 1.125rem;
+    }
+
+    .pillars h3,
+    .steps-list h3 {
+      font-size: 1rem;
+    }
+
+    .pillars p:not(.pillar-figure),
+    .steps-list p {
+      font-size: 0.9375rem;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 2.25rem minmax(0, 1fr);
+      gap: 0.25rem 0.75rem;
+      padding-top: 1.125rem;
+    }
+
+    .step-number {
+      grid-row: span 2;
+      font-size: 1.875rem;
+    }
+
+    .price {
+      gap: 1.75rem 2rem;
+      padding-block: 4rem;
+    }
+
+    .price-amount {
+      margin-top: 1rem;
+      font-size: min(3.125rem, 15.6vw);
+      line-height: 1.1;
+    }
+
+    .price-details {
+      gap: 0.25rem 1.125rem;
+      margin-top: 0.875rem;
+      font-size: 0.9375rem;
+    }
+
+    .book {
+      display: grid;
+      grid-template-columns: 5.25rem minmax(0, 1fr);
+      align-items: start;
+      gap: 1.125rem;
+      margin-top: 2rem;
+      padding: 1.25rem;
+      border-radius: 14px;
+    }
+
+    .book-cover {
+      width: 5.25rem;
+      padding: 0.5rem;
+      font-size: 0.5625rem;
+    }
+
+    .book-cover b {
+      font-size: 0.625rem;
+    }
+
+    .book-cover-kind {
+      display: none;
+    }
+
+    .book-text h3 {
+      font-size: 1.375rem;
+    }
+
+    .book-text p {
+      margin-top: 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .contact {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: 1.5rem 3.5rem;
+    }
+
+    .contact-title {
+      margin-top: 1rem;
+      font-size: min(2.875rem, 14.4vw);
+      line-height: 1.05;
+    }
+
+    .contact-actions {
+      margin-top: 2rem;
+    }
+
+    .night-inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .journal {
+      max-width: 30rem;
+    }
+
+    .contact-qr {
+      display: none;
+    }
+
+    .doc-thumb :global(img) {
+      width: 5.25rem;
+      height: 3.75rem;
+    }
+
+    .doc h3 {
+      font-size: 0.875rem;
+    }
+
+    .doc-text p:last-child {
+      font-size: 0.8125rem;
+    }
+  }
+
+  @media (max-width: 47.4375em) {
+    .help-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .journal {
+      padding: 1.75rem 1.25rem 2rem 3rem;
+    }
+
+    .journal p {
+      font-size: 1.625rem;
+    }
+  }
+
+  /* Phone in portrait: photo above the text, full-width buttons. */
+  @media (max-width: 37.4375em) and (orientation: portrait) {
+    .hero {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding-block: 1.5rem 0.5rem;
+    }
+
+    .hero-text {
+      flex: none;
+    }
+
+    .arch {
+      order: -1;
+      flex: none;
+      width: min(12.5rem, 100%);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-actions,
+    .contact-actions,
+    .price {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .hero-actions :global(.btn),
+    .contact-actions :global(.btn),
+    .price :global(.btn) {
+      padding-inline: 1rem;
+    }
+
+    .hero-price,
+    .contact-actions {
+      text-align: center;
+    }
+  }
+
+  /* Landscape phone: the photo fits between the header and the booking bar. */
+  @media (orientation: landscape) and (max-height: 31.25em) {
+    .hero {
+      align-items: flex-start;
+      padding-top: 1.25rem;
+    }
+
+    .hero-title {
+      font-size: min(2.25rem, 7vw);
+    }
+
+    .hero-subtitle {
+      margin-top: 0.25rem;
+    }
+
+    .hero-lead {
+      margin-top: 0.75rem;
+      font-size: 0.9375rem;
+      line-height: 1.45;
+    }
+
+    .hero-actions {
+      margin-top: 1rem;
+    }
+
+    .arch {
+      flex: none;
+      height: calc(100svh - var(--header-h) - var(--dock-h) - 3rem);
+      max-height: 22rem;
+      min-height: 10rem;
+    }
+  }
+
+  /* Very narrow, or a large system font: the book cover and the pillar
+     figures go above their text. */
+  @media (max-width: 22.4375em) {
+    .book,
+    .pillars li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pillar-figure {
+      grid-row: auto;
+    }
   }
 </style>
