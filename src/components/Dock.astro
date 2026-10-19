@@ -28,7 +28,7 @@ const base = import.meta.env.BASE_URL;
         '--dock-h',
         `${bar.offsetHeight}px`,
       );
-    }).observe(bar);
+    }).observe(bar, { box: 'border-box' });
   }
 
   if (bar && contact && 'IntersectionObserver' in window) {
@@ -93,6 +93,8 @@ const base = import.meta.env.BASE_URL;
   .dock-cta {
     flex: 1 1 10rem;
     min-width: 0;
+    max-width: 24rem;
+    margin-left: auto;
     min-height: 3.25rem;
     padding: 0 1rem;
   }
@@ -112,6 +114,14 @@ const base = import.meta.env.BASE_URL;
   @media (max-width: 19.9375em) {
     .dock-price {
       display: none;
+    }
+  }
+
+  /* Very short screen with a large system font: the bar sits at the end of
+     the page instead of covering it. */
+  @media (max-height: 19.9375em) {
+    .dock {
+      position: static;
     }
   }
 </style>

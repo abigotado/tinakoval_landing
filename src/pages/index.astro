@@ -126,7 +126,7 @@ const jsonLd = {
           src={portrait}
           formats={['avif', 'webp']}
           widths={[200, 400, 600, 840]}
-          sizes="(max-width: 859px) 200px, 420px"
+          sizes="(orientation: landscape) and (max-height: 500px) 280px, (max-width: 599px) 200px, (max-width: 859px) 280px, 420px"
           alt={hero.photoAlt}
           loading="eager"
           fetchpriority="high"
@@ -708,7 +708,7 @@ const jsonLd = {
 
   .steps-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(16.25rem, 100%), 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2.5rem 3rem;
     margin-top: 3.5rem;
     padding: 0;
@@ -747,7 +747,7 @@ const jsonLd = {
     font-family: var(--serif);
     font-weight: 300;
     font-size: clamp(3.5rem, 6.4vw, 5.75rem);
-    line-height: 1.1;
+    line-height: 1;
     font-variant-numeric: lining-nums tabular-nums;
     hyphens: manual;
   }
@@ -1029,6 +1029,7 @@ const jsonLd = {
     .price-amount {
       margin-top: 1rem;
       font-size: min(3.125rem, 15.6vw);
+      line-height: 1.1;
     }
 
     .price-details {
@@ -1172,7 +1173,21 @@ const jsonLd = {
     }
 
     .hero-title {
-      font-size: 2.5rem;
+      font-size: min(2.25rem, 7vw);
+    }
+
+    .hero-subtitle {
+      margin-top: 0.25rem;
+    }
+
+    .hero-lead {
+      margin-top: 0.75rem;
+      font-size: 0.9375rem;
+      line-height: 1.45;
+    }
+
+    .hero-actions {
+      margin-top: 1rem;
     }
 
     .arch {

@@ -59,7 +59,7 @@ const base = import.meta.env.BASE_URL;
         '--header-h',
         `${header.offsetHeight}px`,
       );
-    }).observe(header);
+    }).observe(header, { box: 'border-box' });
   }
 
   if (button && menu && header) {
@@ -211,7 +211,7 @@ const base = import.meta.env.BASE_URL;
     }
 
     .brand-name {
-      font-size: 1.25rem;
+      font-size: min(1.25rem, 6.25vw);
     }
 
     .brand-role {
@@ -280,6 +280,19 @@ const base = import.meta.env.BASE_URL;
       color: var(--muted);
       font-size: 0.9375rem;
       text-decoration: none;
+    }
+  }
+
+  /* Very short screen with a large system font: the header scrolls away
+     instead of covering most of the page, and the menu opens below it. */
+  @media (max-height: 19.9375em) {
+    .header {
+      position: relative;
+    }
+
+    .nav {
+      position: absolute;
+      inset: 100% 0 auto;
     }
   }
 </style>

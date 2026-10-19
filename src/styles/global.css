@@ -69,6 +69,14 @@ html {
   scroll-padding-bottom: var(--dock-h);
 }
 
+/* Header and booking bar do not stick here (Header.astro, Dock.astro). */
+@media (max-height: 19.9375em) {
+  html {
+    scroll-padding-top: 0.5rem;
+    scroll-padding-bottom: 0.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
