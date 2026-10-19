@@ -27,9 +27,10 @@ const usd = 50;
 export const price = {
   rubValue: rub,
   usdValue: usd,
-  amount: `${rub} ₽ / ${usd} $`,
-  rub: `${rub} ₽`,
-  usd: `${usd} $`,
+  // No-break spaces keep «5000 ₽» and «50 $» whole when the line wraps.
+  amount: `${rub}\u00a0₽ / ${usd}\u00a0$`,
+  rub: `${rub}\u00a0₽`,
+  usd: `${usd}\u00a0$`,
   /** Read instead of the slash by screen readers. */
   or: 'или',
   duration: '60–80 минут',

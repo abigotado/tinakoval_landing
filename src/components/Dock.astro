@@ -20,6 +20,17 @@ const base = import.meta.env.BASE_URL;
   const bar = document.querySelector<HTMLElement>('[data-dock]');
   const contact = document.getElementById('contact');
 
+  if (bar) {
+    // Real bar height (0 when hidden on wide screens) for the footer padding
+    // and scroll offsets; the CSS value is the fallback.
+    new ResizeObserver(() => {
+      document.documentElement.style.setProperty(
+        '--dock-h',
+        `${bar.offsetHeight}px`,
+      );
+    }).observe(bar);
+  }
+
   if (bar && contact && 'IntersectionObserver' in window) {
     new IntersectionObserver(([entry]) => {
       const hidden = entry?.isIntersecting ?? false;
@@ -34,7 +45,8 @@ const base = import.meta.env.BASE_URL;
     display: none;
   }
 
-  @media (max-width: 859px) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .dock {
       position: fixed;
       z-index: 10;
@@ -42,9 +54,12 @@ const base = import.meta.env.BASE_URL;
       bottom: 0;
       left: 0;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 14px;
-      padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+      gap: 0.5rem 0.875rem;
+      padding: 0.75rem max(1rem, env(safe-area-inset-right, 0px))
+        calc(0.75rem + env(safe-area-inset-bottom, 0px))
+        max(1rem, env(safe-area-inset-left, 0px));
       border-top: 1px solid var(--line);
       background: rgb(241 230 201 / 0.94);
       transition:
@@ -63,21 +78,40 @@ const base = import.meta.env.BASE_URL;
   .dock-price {
     display: flex;
     flex-direction: column;
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.2;
     color: var(--muted);
   }
 
   .dock-price b {
     color: var(--ink);
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     white-space: nowrap;
   }
 
   .dock-cta {
-    flex: 1;
-    min-height: 52px;
-    padding: 0 16px;
+    flex: 1 1 10rem;
+    min-width: 0;
+    min-height: 3.25rem;
+    padding: 0 1rem;
+  }
+
+  @media (orientation: landscape) and (max-height: 31.25em) {
+    .dock {
+      padding-top: 0.5rem;
+      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .dock-cta {
+      min-height: 2.75rem;
+    }
+  }
+
+  /* A large system font on a phone: the button alone, the price is on the page. */
+  @media (max-width: 19.9375em) {
+    .dock-price {
+      display: none;
+    }
   }
 </style>

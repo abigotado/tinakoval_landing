@@ -370,20 +370,20 @@ const jsonLd = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 48px 88px;
-    padding-block: 88px 16px;
+    gap: 3rem 5.5rem;
+    padding-block: 5.5rem 1rem;
   }
 
   .hero-text {
-    flex: 1 1 520px;
+    flex: 1 1 32.5rem;
     min-width: 0;
   }
 
   .hero-title {
-    margin-top: 22px;
+    margin-top: 1.375rem;
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(52px, 6.4vw, 92px);
+    font-size: clamp(3.25rem, 6.4vw, 5.75rem);
     line-height: 1.02;
     letter-spacing: -0.015em;
     text-wrap: balance;
@@ -395,18 +395,18 @@ const jsonLd = {
   }
 
   .hero-subtitle {
-    margin-top: 16px;
+    margin-top: 1rem;
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(24px, 2.2vw, 32px);
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
     line-height: 1.25;
     color: var(--muted);
   }
 
   .hero-lead {
     max-width: 34em;
-    margin-top: 30px;
-    font-size: 20px;
+    margin-top: 1.875rem;
+    font-size: 1.25rem;
     line-height: 1.55;
   }
 
@@ -414,13 +414,13 @@ const jsonLd = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 14px 24px;
-    margin-top: 36px;
+    gap: 0.875rem 1.5rem;
+    margin-top: 2.25rem;
   }
 
   .hero-price {
     color: var(--muted);
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .hero-price b {
@@ -430,8 +430,8 @@ const jsonLd = {
 
   .arch {
     position: relative;
-    flex: 0 1 420px;
-    min-width: 260px;
+    flex: 0 1 26.25rem;
+    min-width: 16.25rem;
     max-width: 100%;
     margin-inline: auto;
     aspect-ratio: 4 / 5;
@@ -443,7 +443,7 @@ const jsonLd = {
   .arch::after {
     content: '';
     position: absolute;
-    inset: 12px;
+    inset: 0.75rem;
     border: 1px solid rgb(255 255 255 / 0.7);
     border-radius: 999px 999px 14px 14px;
     pointer-events: none;
@@ -461,10 +461,10 @@ const jsonLd = {
   /* Если вам знакомо */
   .familiar blockquote {
     max-width: 21em;
-    margin-top: 24px;
+    margin-top: 1.5rem;
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(32px, 3.6vw, 52px);
+    font-size: clamp(2rem, 3.6vw, 3.25rem);
     line-height: 1.22;
     text-wrap: pretty;
   }
@@ -486,8 +486,8 @@ const jsonLd = {
   .help-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 64px;
-    margin-top: 56px;
+    gap: 0 4rem;
+    margin-top: 3.5rem;
     padding: 0;
     list-style: none;
   }
@@ -495,15 +495,15 @@ const jsonLd = {
   .help-list li {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 26px 0 32px;
+    gap: 0.5rem;
+    padding: 1.625rem 0 2rem;
     border-top: 1px solid var(--line-olive);
   }
 
   .help-list h3 {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: 30px;
+    font-size: 1.875rem;
     line-height: 1.15;
   }
 
@@ -518,9 +518,9 @@ const jsonLd = {
   /* Обо мне */
   .pillars {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
-    gap: 40px;
-    margin-top: 56px;
+    grid-template-columns: repeat(auto-fit, minmax(min(13.75rem, 100%), 1fr));
+    gap: 2.5rem;
+    margin-top: 3.5rem;
     padding: 0;
     list-style: none;
   }
@@ -528,26 +528,26 @@ const jsonLd = {
   .pillars li {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0.75rem;
   }
 
   .pillar-figure {
     font-family: var(--serif);
     font-weight: 300;
-    font-size: 84px;
+    font-size: 5.25rem;
     line-height: 1;
     color: var(--plum);
   }
 
   .pillar-figure span {
-    margin-left: 8px;
-    font-size: 30px;
+    margin-left: 0.5rem;
+    font-size: 1.875rem;
     color: var(--muted);
   }
 
   .pillars h3,
   .steps-list h3 {
-    font-size: 17px;
+    font-size: 1.0625rem;
     font-weight: 600;
     line-height: 1.35;
   }
@@ -562,7 +562,7 @@ const jsonLd = {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     align-items: center;
-    gap: 56px 80px;
+    gap: 3.5rem 5rem;
   }
 
   .night .eyebrow {
@@ -570,7 +570,7 @@ const jsonLd = {
   }
 
   .notebook {
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     color: var(--night-accent);
   }
 
@@ -585,16 +585,16 @@ const jsonLd = {
   .night-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 0.875rem;
     max-width: 32em;
-    margin-top: 32px;
+    margin-top: 2rem;
     padding: 0;
     list-style: none;
   }
 
   .night-list li {
     position: relative;
-    padding-left: 28px;
+    padding-left: 1.75rem;
   }
 
   .night-list li::before {
@@ -602,25 +602,28 @@ const jsonLd = {
     position: absolute;
     top: 0.8em;
     left: 0;
-    width: 14px;
+    width: 0.875rem;
     height: 1px;
     background: var(--night-accent);
   }
 
   .journal {
     position: relative;
-    padding: 36px 32px 40px 56px;
+    padding: 2.25rem 2rem 2.5rem 3.5rem;
     border-radius: 6px;
     background-color: var(--journal);
     background-image:
       linear-gradient(
         90deg,
-        transparent 39px,
-        #e3c9cf 39px 40px,
+        transparent 2.4375rem,
+        #e3c9cf 2.4375rem 2.5rem,
         transparent 0
       ),
-      repeating-linear-gradient(transparent 0 35px, #e4dcc8 35px 36px);
-    background-position: 0 36px;
+      repeating-linear-gradient(
+        transparent 0 2.1875rem,
+        #e4dcc8 2.1875rem 2.25rem
+      );
+    background-position: 0 2.25rem;
     color: var(--ink);
     box-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.6);
   }
@@ -630,8 +633,8 @@ const jsonLd = {
     flex-direction: column;
     font-family: var(--hand);
     font-weight: 500;
-    font-size: 28px;
-    line-height: 36px;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
     hyphens: manual;
   }
 
@@ -642,9 +645,9 @@ const jsonLd = {
 
   .docs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
-    gap: 12px;
-    margin-top: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(21.25rem, 100%), 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
     padding: 0;
     list-style: none;
   }
@@ -652,8 +655,8 @@ const jsonLd = {
   .doc {
     display: flex;
     align-items: flex-start;
-    gap: 16px;
-    padding: 12px;
+    gap: 1rem;
+    padding: 0.75rem;
     border: 1px solid var(--line);
     border-radius: 12px;
     background: var(--paper);
@@ -665,8 +668,8 @@ const jsonLd = {
   }
 
   .doc-thumb :global(img) {
-    width: 112px;
-    height: 78px;
+    width: 7rem;
+    height: 4.875rem;
     border: 1px solid var(--line);
     border-radius: 6px;
     object-fit: cover;
@@ -680,20 +683,20 @@ const jsonLd = {
   }
 
   .doc-meta {
-    font-size: 11px;
+    font-size: 0.6875rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--muted);
   }
 
   .doc h3 {
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 600;
     line-height: 1.35;
   }
 
   .doc-text p:last-child {
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 1.45;
     color: var(--muted);
   }
@@ -705,9 +708,9 @@ const jsonLd = {
 
   .steps-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-    gap: 40px 48px;
-    margin-top: 56px;
+    grid-template-columns: repeat(auto-fit, minmax(min(16.25rem, 100%), 1fr));
+    gap: 2.5rem 3rem;
+    margin-top: 3.5rem;
     padding: 0;
     list-style: none;
   }
@@ -715,8 +718,8 @@ const jsonLd = {
   .steps-list li {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding-top: 22px;
+    gap: 0.625rem;
+    padding-top: 1.375rem;
     border-top: 1px solid var(--ink);
   }
 
@@ -724,7 +727,7 @@ const jsonLd = {
     font-family: var(--serif);
     font-style: italic;
     font-weight: 300;
-    font-size: 34px;
+    font-size: 2.125rem;
     line-height: 1;
     color: var(--plum);
   }
@@ -735,16 +738,16 @@ const jsonLd = {
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 32px 64px;
-    padding-block: 104px;
+    gap: 2rem 4rem;
+    padding-block: 6.5rem;
   }
 
   .price-amount {
-    margin-top: 18px;
+    margin-top: 1.125rem;
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(56px, 6.4vw, 92px);
-    line-height: 1;
+    font-size: clamp(3.5rem, 6.4vw, 5.75rem);
+    line-height: 1.1;
     font-variant-numeric: lining-nums tabular-nums;
     hyphens: manual;
   }
@@ -758,8 +761,8 @@ const jsonLd = {
   .price-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 22px;
-    margin-top: 18px;
+    gap: 0.375rem 1.375rem;
+    margin-top: 1.125rem;
     padding: 0;
     list-style: none;
     color: var(--muted);
@@ -770,10 +773,10 @@ const jsonLd = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 28px;
-    max-width: 880px;
-    margin-top: 56px;
-    padding: 32px;
+    gap: 1.75rem;
+    max-width: 55rem;
+    margin-top: 3.5rem;
+    padding: 2rem;
     border: 1px solid var(--line);
     border-radius: 16px;
   }
@@ -783,47 +786,47 @@ const jsonLd = {
     flex: none;
     flex-direction: column;
     justify-content: space-between;
-    width: 128px;
+    width: 8rem;
     aspect-ratio: 3 / 4;
-    padding: 13px;
+    padding: 0.8125rem;
     border-radius: 4px 8px 8px 4px;
     background: linear-gradient(160deg, #2b6fa3 0%, #1f5d8f 100%);
     color: #fff;
-    font-size: 10px;
+    font-size: 0.625rem;
     line-height: 1.25;
     box-shadow: 0 16px 30px -18px rgb(0 0 0 / 0.5);
     hyphens: manual;
   }
 
   .book-cover b {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
 
   .book-text {
-    flex: 1 1 360px;
+    flex: 1 1 22.5rem;
     min-width: 0;
   }
 
   .book-text h3 {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: 30px;
+    font-size: 1.875rem;
     line-height: 1.2;
   }
 
   .book-text p {
     max-width: 36em;
-    margin-top: 10px;
+    margin-top: 0.625rem;
   }
 
   .book-text :global(.book-link) {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
-    margin-top: 8px;
+    min-height: 2.75rem;
+    margin-top: 0.5rem;
     color: var(--plum);
     font-weight: 500;
-    text-underline-offset: 4px;
+    text-underline-offset: 0.25rem;
   }
 
   /* Запись */
@@ -831,16 +834,16 @@ const jsonLd = {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    gap: 40px 64px;
-    padding-block: 40px 96px;
+    gap: 2.5rem 4rem;
+    padding-block: 2.5rem 6rem;
   }
 
   .contact-title {
     max-width: 11em;
-    margin-top: 18px;
+    margin-top: 1.125rem;
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(48px, 6vw, 88px);
+    font-size: clamp(3rem, 6vw, 5.5rem);
     line-height: 1.04;
     text-wrap: balance;
   }
@@ -849,8 +852,8 @@ const jsonLd = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 24px;
-    margin-top: 40px;
+    gap: 0.75rem 1.5rem;
+    margin-top: 2.5rem;
   }
 
   .contact-handle {
@@ -867,10 +870,10 @@ const jsonLd = {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    width: 176px;
+    gap: 0.625rem;
+    width: 11rem;
     color: var(--muted);
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.4;
     text-align: center;
   }
@@ -882,34 +885,253 @@ const jsonLd = {
   }
 
   .contact-qr :global(svg) {
-    width: 176px;
-    height: 176px;
+    width: 11rem;
+    height: 11rem;
     border: 1px solid var(--line);
     border-radius: 12px;
   }
 
   /* Narrow desktop: keep the photo beside the text. */
-  @media (max-width: 1149px) and (min-width: 860px) {
+  @media (max-width: 71.8125em) and (min-width: 53.75em) {
     .hero {
-      gap: 48px 40px;
+      gap: 3rem 2.5rem;
     }
 
     .hero-text {
-      flex-basis: 360px;
+      flex-basis: 22.5rem;
     }
 
     .arch {
-      flex-basis: 320px;
+      flex-basis: 20rem;
     }
   }
 
-  /* Phone */
-  @media (max-width: 859px) {
+  /* Tablet, phone and landscape phone. The photo stays beside the text until
+     the phone layout below stacks them. Display sizes are capped in vw so a
+     large system font still fits a narrow phone. */
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
+    .hero {
+      flex-wrap: nowrap;
+      gap: 2rem;
+      padding-block: 2rem 0.5rem;
+    }
+
+    .hero-text {
+      flex: 1 1 0;
+    }
+
+    .arch {
+      flex: 0 0 clamp(12.5rem, 32vw, 17.5rem);
+      min-width: 0;
+      border-radius: 999px 999px 16px 16px;
+    }
+
+    .arch::after {
+      inset: 0.5rem;
+      border-radius: 999px 999px 10px 10px;
+    }
+
+    .hero-title {
+      margin-top: 0.75rem;
+      font-size: min(3rem, 15vw);
+    }
+
+    .hero-subtitle {
+      margin-top: 0.625rem;
+      font-size: 1.375rem;
+    }
+
+    .hero-lead {
+      margin-top: 1.125rem;
+      font-size: 1.0625rem;
+    }
+
+    .hero-actions {
+      gap: 0.75rem 1.25rem;
+      margin-top: 1.75rem;
+    }
+
+    .hero-price {
+      font-size: 0.9375rem;
+    }
+
+    .familiar blockquote {
+      margin-top: 1.125rem;
+      font-size: min(1.8125rem, 9.1vw);
+      line-height: 1.24;
+    }
+
+    .help-list {
+      margin-top: 2.25rem;
+    }
+
+    .help-list li {
+      gap: 0.375rem;
+      padding: 1.25rem 0 1.5rem;
+    }
+
+    .help-list h3 {
+      font-size: 1.625rem;
+    }
+
+    .pillars,
+    .steps-list {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.75rem;
+      margin-top: 2.25rem;
+    }
+
+    .pillars li {
+      display: grid;
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: 0.25rem 1rem;
+      align-items: start;
+    }
+
+    .pillar-figure {
+      grid-row: span 2;
+      font-size: min(2.75rem, 13.75vw);
+    }
+
+    .pillar-figure span {
+      margin-left: 0.375rem;
+      font-size: 1.125rem;
+    }
+
+    .pillars h3,
+    .steps-list h3 {
+      font-size: 1rem;
+    }
+
+    .pillars p:not(.pillar-figure),
+    .steps-list p {
+      font-size: 0.9375rem;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 2.25rem minmax(0, 1fr);
+      gap: 0.25rem 0.75rem;
+      padding-top: 1.125rem;
+    }
+
+    .step-number {
+      grid-row: span 2;
+      font-size: 1.875rem;
+    }
+
+    .price {
+      gap: 1.75rem 2rem;
+      padding-block: 4rem;
+    }
+
+    .price-amount {
+      margin-top: 1rem;
+      font-size: min(3.125rem, 15.6vw);
+    }
+
+    .price-details {
+      gap: 0.25rem 1.125rem;
+      margin-top: 0.875rem;
+      font-size: 0.9375rem;
+    }
+
+    .book {
+      display: grid;
+      grid-template-columns: 5.25rem minmax(0, 1fr);
+      align-items: start;
+      gap: 1.125rem;
+      margin-top: 2rem;
+      padding: 1.25rem;
+      border-radius: 14px;
+    }
+
+    .book-cover {
+      width: 5.25rem;
+      padding: 0.5rem;
+      font-size: 0.5625rem;
+    }
+
+    .book-cover b {
+      font-size: 0.625rem;
+    }
+
+    .book-cover-kind {
+      display: none;
+    }
+
+    .book-text h3 {
+      font-size: 1.375rem;
+    }
+
+    .book-text p {
+      margin-top: 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .contact {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: 1.5rem 3.5rem;
+    }
+
+    .contact-title {
+      margin-top: 1rem;
+      font-size: min(2.875rem, 14.4vw);
+      line-height: 1.05;
+    }
+
+    .contact-actions {
+      margin-top: 2rem;
+    }
+
+    .night-inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .journal {
+      max-width: 30rem;
+    }
+
+    .contact-qr {
+      display: none;
+    }
+
+    .doc-thumb :global(img) {
+      width: 5.25rem;
+      height: 3.75rem;
+    }
+
+    .doc h3 {
+      font-size: 0.875rem;
+    }
+
+    .doc-text p:last-child {
+      font-size: 0.8125rem;
+    }
+  }
+
+  @media (max-width: 47.4375em) {
+    .help-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .journal {
+      padding: 1.75rem 1.25rem 2rem 3rem;
+    }
+
+    .journal p {
+      font-size: 1.625rem;
+    }
+  }
+
+  /* Phone in portrait: photo above the text, full-width buttons. */
+  @media (max-width: 37.4375em) and (orientation: portrait) {
     .hero {
       flex-direction: column;
       align-items: stretch;
       gap: 0;
-      padding-block: 24px 8px;
+      padding-block: 1.5rem 0.5rem;
     }
 
     .hero-text {
@@ -919,211 +1141,58 @@ const jsonLd = {
     .arch {
       order: -1;
       flex: none;
-      width: 200px;
-      min-width: 0;
-      margin-bottom: 24px;
-      border-radius: 999px 999px 16px 16px;
+      width: min(12.5rem, 100%);
+      margin-bottom: 1.5rem;
     }
 
-    .arch::after {
-      inset: 8px;
-      border-radius: 999px 999px 10px 10px;
-    }
-
-    .hero-title {
-      margin-top: 12px;
-      font-size: 48px;
-    }
-
-    .hero-subtitle {
-      margin-top: 10px;
-      font-size: 22px;
-    }
-
-    .hero-lead {
-      margin-top: 18px;
-      font-size: 17px;
-    }
-
-    .hero-actions {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 12px;
-      margin-top: 28px;
-    }
-
-    .hero-price {
-      text-align: center;
-      font-size: 15px;
-    }
-
-    .familiar blockquote {
-      margin-top: 18px;
-      font-size: 29px;
-      line-height: 1.24;
-    }
-
-    .help-list {
-      margin-top: 36px;
-    }
-
-    .help-list li {
-      gap: 6px;
-      padding: 20px 0 24px;
-    }
-
-    .help-list h3 {
-      font-size: 26px;
-    }
-
-    .pillars,
-    .steps-list {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 28px;
-      margin-top: 36px;
-    }
-
-    .pillars li {
-      display: grid;
-      grid-template-columns: 112px minmax(0, 1fr);
-      gap: 4px 16px;
-      align-items: start;
-    }
-
-    .pillar-figure {
-      grid-row: span 2;
-      font-size: 44px;
-    }
-
-    .pillar-figure span {
-      margin-left: 6px;
-      font-size: 18px;
-    }
-
-    .pillars h3,
-    .steps-list h3 {
-      font-size: 16px;
-    }
-
-    .pillars p:not(.pillar-figure),
-    .steps-list p {
-      font-size: 15px;
-    }
-
-    .steps-list li {
-      display: grid;
-      grid-template-columns: 36px minmax(0, 1fr);
-      gap: 4px 12px;
-      padding-top: 18px;
-    }
-
-    .step-number {
-      grid-row: span 2;
-      font-size: 30px;
-    }
-
+    .hero-actions,
+    .contact-actions,
     .price {
       flex-direction: column;
       align-items: stretch;
-      gap: 28px;
-      padding-block: 64px;
     }
 
-    .price-amount {
-      margin-top: 16px;
-      font-size: 50px;
+    .hero-actions :global(.btn),
+    .contact-actions :global(.btn),
+    .price :global(.btn) {
+      padding-inline: 1rem;
     }
 
-    .price-details {
-      gap: 4px 18px;
-      margin-top: 14px;
-      font-size: 15px;
-    }
-
-    .book {
-      display: grid;
-      grid-template-columns: 84px minmax(0, 1fr);
-      align-items: start;
-      gap: 18px;
-      margin-top: 32px;
-      padding: 20px;
-      border-radius: 14px;
-    }
-
-    .book-cover {
-      width: 84px;
-      padding: 8px;
-      font-size: 9px;
-    }
-
-    .book-cover b {
-      font-size: 10px;
-    }
-
-    .book-cover-kind {
-      display: none;
-    }
-
-    .book-text h3 {
-      font-size: 22px;
-    }
-
-    .book-text p {
-      margin-top: 8px;
-      font-size: 15px;
-    }
-
-    .contact {
-      grid-template-columns: minmax(0, 1fr);
-      padding-block: 24px 56px;
-    }
-
-    .contact-title {
-      margin-top: 16px;
-      font-size: 46px;
-      line-height: 1.05;
-    }
-
+    .hero-price,
     .contact-actions {
-      flex-direction: column;
-      align-items: stretch;
-      margin-top: 32px;
       text-align: center;
-    }
-
-    .contact-qr {
-      display: none;
-    }
-
-    .doc-thumb :global(img) {
-      width: 84px;
-      height: 60px;
-    }
-
-    .doc h3 {
-      font-size: 14px;
-    }
-
-    .doc-text p:last-child {
-      font-size: 13px;
     }
   }
 
-  @media (max-width: 759px) {
-    .help-list {
+  /* Landscape phone: the photo fits between the header and the booking bar. */
+  @media (orientation: landscape) and (max-height: 31.25em) {
+    .hero {
+      align-items: flex-start;
+      padding-top: 1.25rem;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+    }
+
+    .arch {
+      flex: none;
+      height: calc(100svh - var(--header-h) - var(--dock-h) - 3rem);
+      max-height: 22rem;
+      min-height: 10rem;
+    }
+  }
+
+  /* Very narrow, or a large system font: the book cover and the pillar
+     figures go above their text. */
+  @media (max-width: 22.4375em) {
+    .book,
+    .pillars li {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .night-inner {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .journal {
-      padding: 28px 20px 32px 48px;
-    }
-
-    .journal p {
-      font-size: 26px;
+    .pillar-figure {
+      grid-row: auto;
     }
   }
 </style>

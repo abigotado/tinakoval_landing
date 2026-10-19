@@ -22,28 +22,36 @@
     Roboto, sans-serif;
   --hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
 
-  --gutter: 48px;
-  --section-y: 120px;
-  --header-h: 81px;
+  --gutter: 3rem;
+  --section-y: 7.5rem;
+  --header-h: calc(5rem + 1px);
   --dock-h: 0px;
 
   color-scheme: light;
 }
 
-@media (max-width: 1149px) and (min-width: 860px) {
+@media (max-width: 71.8125em) and (min-width: 53.75em) {
   :root {
     /* The header nav wraps to a second row here (Header.astro). */
-    --header-h: 107px;
+    --header-h: calc(6.625rem + 1px);
   }
 }
 
-@media (max-width: 859px) {
+@media (max-width: 53.6875em),
+  (orientation: landscape) and (max-height: 31.25em) {
   :root {
-    --gutter: 20px;
-    --section-y: 72px;
-    --header-h: 73px;
+    --gutter: 1.25rem;
+    --section-y: 4.5rem;
+    --header-h: calc(4.5rem + 1px);
     /* Bottom booking bar (§5.14): 12 + 52 + 12 px plus the safe area. */
-    --dock-h: calc(76px + env(safe-area-inset-bottom, 0px));
+    --dock-h: calc(4.75rem + 1px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Landscape phone: a slimmer booking bar (Dock.astro). */
+@media (orientation: landscape) and (max-height: 31.25em) {
+  :root {
+    --dock-h: calc(3.75rem + 1px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -56,7 +64,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 8px);
+  scroll-padding-top: calc(var(--header-h) + 0.5rem);
   /* Keep focused elements clear of the phone booking bar (WCAG 2.4.11). */
   scroll-padding-bottom: var(--dock-h);
 }
@@ -72,21 +80,22 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1.6;
   overflow-wrap: break-word;
 }
 
 /* Hyphenate only where long Russian words could overflow (AC-RWD-3). */
-@media (max-width: 479px) {
+@media (max-width: 29.9375em) {
   body {
     hyphens: auto;
   }
 }
 
-@media (max-width: 859px) {
+@media (max-width: 53.6875em),
+  (orientation: landscape) and (max-height: 31.25em) {
   body {
-    font-size: 16px;
+    font-size: 1rem;
   }
 }
 
@@ -137,9 +146,9 @@ a {
 .skip-link {
   position: absolute;
   z-index: 100;
-  top: 8px;
-  left: 8px;
-  padding: 10px 16px;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.625rem 1rem;
   border-radius: 8px;
   background: var(--ink);
   color: #fff;
@@ -153,9 +162,11 @@ a {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 75rem;
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  /* viewport-fit=cover: keep content clear of notches in landscape. */
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px))
+    max(var(--gutter), env(safe-area-inset-right, 0px));
 }
 
 .section {
@@ -163,7 +174,7 @@ a {
 }
 
 .eyebrow {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   line-height: 1.6;
   letter-spacing: 0.16em;
@@ -173,22 +184,23 @@ a {
 }
 
 .h2 {
-  margin-top: 16px;
+  margin-top: 1rem;
   font-family: var(--serif);
   font-weight: 300;
-  font-size: clamp(36px, 3.6vw, 52px);
+  font-size: clamp(min(2.25rem, 11.25vw), 3.6vw, 3.25rem);
   line-height: 1.1;
   text-wrap: balance;
 }
 
-@media (max-width: 859px) {
+@media (max-width: 53.6875em),
+  (orientation: landscape) and (max-height: 31.25em) {
   .eyebrow {
-    font-size: 12px;
+    font-size: 0.75rem;
     letter-spacing: 0.14em;
   }
 
   .h2 {
-    margin-top: 14px;
+    margin-top: 0.875rem;
   }
 }
 
@@ -196,9 +208,9 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: 54px;
-  padding: 0 30px;
+  gap: 0.625rem;
+  min-height: 3.375rem;
+  padding: 0 1.875rem;
   border: 1px solid transparent;
   border-radius: 999px;
   font-weight: 500;
@@ -206,6 +218,13 @@ a {
   text-align: center;
   text-decoration: none;
   hyphens: manual;
+}
+
+/* Very narrow, or a large system font: long button words may hyphenate. */
+@media (max-width: 22.4375em) {
+  .btn {
+    hyphens: auto;
+  }
 }
 
 .btn-primary {

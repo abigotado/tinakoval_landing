@@ -36,45 +36,46 @@ import Base from '../layouts/Base.astro';
 <style>
   .policy {
     max-width: calc(46em + 2 * var(--gutter));
-    padding-block: 72px 96px;
+    padding-block: 4.5rem 6rem;
   }
 
   h1 {
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(36px, 5vw, 56px);
+    font-size: clamp(min(2.25rem, 11.25vw), 5vw, 3.5rem);
     line-height: 1.1;
     text-wrap: balance;
   }
 
   .policy-revision {
-    margin-top: 12px;
+    margin-top: 0.75rem;
     color: var(--muted);
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
 
   .policy-intro {
-    margin-top: 28px;
+    margin-top: 1.75rem;
   }
 
   section {
-    margin-top: 40px;
+    margin-top: 2.5rem;
   }
 
   h2 {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: 26px;
+    font-size: 1.625rem;
     line-height: 1.2;
   }
 
   section p {
-    margin-top: 12px;
+    margin-top: 0.75rem;
   }
 
-  @media (max-width: 859px) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .policy {
-      padding-block: 40px 64px;
+      padding-block: 2.5rem 4rem;
     }
   }
 </style>
