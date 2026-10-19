@@ -1,0 +1,16 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+import { a11y } from '../content/ru';
+
+// External links open in a new tab, with rel and the «↗» mark (AC-MAT-1).
+type Props = Omit<HTMLAttributes<'a'>, 'target' | 'rel'> & { href: string };
+
+const props = Astro.props;
+---
+
+<a {...props} target="_blank" rel="noopener noreferrer">
+  <slot />
+  <span aria-hidden="true">&nbsp;↗</span>
+  <span class="visually-hidden">{a11y.newTab}</span>
+</a>

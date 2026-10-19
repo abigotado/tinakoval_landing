@@ -1,0 +1,46 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { notFound } from '../content/ru';
+import Base from '../layouts/Base.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Base
+  title={notFound.metaTitle}
+  description={notFound.metaDescription}
+  canonical={false}
+>
+  <Header />
+  <main id="main" class="container not-found">
+    <h1>{notFound.title}</h1>
+    <p>{notFound.text}</p>
+    <a class="btn btn-primary" href={base}>
+      {notFound.back}
+    </a>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    min-height: 60svh;
+    padding-block: 6rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(min(2.5rem, 12.5vw), 6vw, 4.5rem);
+    line-height: 1.05;
+  }
+
+  p {
+    color: var(--muted);
+  }
+</style>
