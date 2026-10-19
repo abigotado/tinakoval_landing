@@ -47,8 +47,13 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 
 ## Content and privacy rules
 
-- Never publish the diploma appendix PDF or any personal data (documents,
-  phone, address, client details, photos of clients).
+- Never publish identity documents, the graded pages of the diploma appendix
+  (page 2 onward), or any client data (names, messages, photos, details).
+  Page 1 of the appendix is approved by her as is, including her full and
+  maiden name, date of birth and document numbers.
+- The only public contact is Telegram @tinakseniya (nick, `t.me` link and a QR
+  code). Never show her phone number, WhatsApp or Instagram on the site. The
+  list of what may be published is `docs/specs/landing.md` §4.
 - No analytics or tracking scripts without a consent banner first.
 - No Google Fonts CDN or any third-party font/script CDN. Self-host fonts
   (files in `public/fonts`, `@font-face` in our CSS).
@@ -56,6 +61,17 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
   treatment, cure or guaranteed results.
 - The site stays `noindex` until launch (`src/launch.ts` → `indexable`). At
   launch also drop `skipAudits` from `lighthouserc.json`.
+
+## Specs
+
+- Requirements and acceptance criteria live in `docs/specs/` (index:
+  `docs/specs/README.md`); decisions with reasons in `docs/decisions.md`.
+- Spec first: a PR that adds or changes behaviour updates the spec in the same
+  PR; smaller PRs cite the spec section they implement. List the closed `AC-…`
+  criteria in the PR's "Spec" section.
+- Site copy lives in `src/content/ru.ts`; the spec sets structure and rules.
+  Facts marked «уточнить» or «ждём» in `docs/specs/landing.md` §4 never ship to
+  production.
 
 ## Conventions
 
