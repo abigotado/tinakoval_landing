@@ -1,6 +1,6 @@
 # tinakoval_landing
 
-Landing page for Ксения Коваленко, психолог. Static Astro site published at
+Landing page for Ксения Панькова, психолог. Static Astro site published at
 https://tinaksenia.com. This file is the canonical agent/contributor guide;
 `CLAUDE.md` just imports it.
 

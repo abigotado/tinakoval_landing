@@ -1,6 +1,6 @@
 # tinakoval_landing
 
-Landing page for Ксения Коваленко, психолог — https://tinaksenia.com.
+Landing page for Ксения Панькова, психолог — https://tinaksenia.com.
 Static [Astro](https://astro.build) site, hosted on GitHub Pages.
 
 ## Run
