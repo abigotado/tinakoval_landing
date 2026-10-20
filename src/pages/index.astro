@@ -121,7 +121,7 @@ const jsonLd = {
           </p>
         </div>
       </div>
-      <div class="arch">
+      <div class="portrait-frame">
         <Mark variant="column" class="hero-mark" />
         <Picture
           src={portrait}
@@ -403,32 +403,37 @@ const jsonLd = {
     font-weight: 600;
   }
 
-  .arch {
+  .portrait-frame {
     position: relative;
     flex: 0 1 26.25rem;
     min-width: 16.25rem;
     max-width: 100%;
     margin-inline: auto;
     aspect-ratio: 4 / 5;
-    /* Not clipped, so the 花永愛 mark can sit outside; the photo clips itself. */
-    border-radius: 999px 999px 20px 20px;
-    background: linear-gradient(180deg, var(--olive) 0%, #d9cedb 100%);
+    isolation: isolate;
+    /* Not clipped, so the 花永愛 mark and the frame can sit outside; the photo
+       clips itself. */
+    border-radius: 22px;
+    --frame-shift: 1.125rem;
   }
 
-  .arch::after {
+  /* A thin plum outline offset down and to the right, away from the mark. */
+  .portrait-frame::after {
     content: '';
     position: absolute;
-    inset: 0.75rem;
-    border: 1px solid rgb(255 255 255 / 0.7);
-    border-radius: 999px 999px 14px 14px;
+    inset: 0;
+    z-index: -1;
+    border: 1.4px solid var(--plum);
+    border-radius: 26px;
+    transform: translate(var(--frame-shift), var(--frame-shift));
     pointer-events: none;
   }
 
-  .arch :global(picture) {
+  .portrait-frame :global(picture) {
     border-radius: inherit;
   }
 
-  .arch :global(img) {
+  .portrait-frame :global(img) {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -438,14 +443,14 @@ const jsonLd = {
     object-position: 52% 28%;
   }
 
-  /* 花永愛 beside the arch (AC-MARK-2). Out of the flow, so it never moves the
+  /* 花永愛 beside the photo (AC-MARK-2). Out of the flow, so it never moves the
      layout; shown only where the gap between text and photo can hold it. */
-  .arch :global(.hero-mark) {
+  .portrait-frame :global(.hero-mark) {
     display: none;
   }
 
   @media (min-width: 71.875em) {
-    .arch :global(.hero-mark) {
+    .portrait-frame :global(.hero-mark) {
       display: block;
       position: absolute;
       right: calc(100% + 1.75rem);
@@ -823,7 +828,7 @@ const jsonLd = {
       flex-basis: 22.5rem;
     }
 
-    .arch {
+    .portrait-frame {
       flex-basis: 20rem;
     }
   }
@@ -843,15 +848,15 @@ const jsonLd = {
       flex: 1 1 0;
     }
 
-    .arch {
+    .portrait-frame {
       flex: 0 0 clamp(12.5rem, 32vw, 17.5rem);
       min-width: 0;
-      border-radius: 999px 999px 16px 16px;
+      border-radius: 18px;
+      --frame-shift: 0.75rem;
     }
 
-    .arch::after {
-      inset: 0.5rem;
-      border-radius: 999px 999px 10px 10px;
+    .portrait-frame::after {
+      border-radius: 21px;
     }
 
     .hero-title {
@@ -1054,7 +1059,7 @@ const jsonLd = {
       flex: none;
     }
 
-    .arch {
+    .portrait-frame {
       order: -1;
       flex: none;
       width: min(12.5rem, 100%);
@@ -1105,7 +1110,7 @@ const jsonLd = {
       margin-top: 1rem;
     }
 
-    .arch {
+    .portrait-frame {
       flex: none;
       height: calc(100svh - var(--header-h) - var(--dock-h) - 3rem);
       max-height: 22rem;
