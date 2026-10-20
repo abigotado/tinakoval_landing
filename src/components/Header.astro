@@ -1,6 +1,7 @@
 ---
 import { contacts, nav, person } from '../content/ru';
 import ExternalLink from './ExternalLink.astro';
+import Mark from './Mark.astro';
 
 const base = import.meta.env.BASE_URL;
 ---
@@ -11,8 +12,11 @@ const base = import.meta.env.BASE_URL;
 <header class="header" data-header>
   <div class="container header-inner">
     <a class="brand" href={`${base}#top`}>
-      <span class="brand-name">{person.name}</span>
-      <span class="brand-role">{person.profession}</span>
+      <Mark variant="yong" class="brand-mark" />
+      <span class="brand-text">
+        <span class="brand-name">{person.name}</span>
+        <span class="brand-role">{person.profession}</span>
+      </span>
     </a>
     <button
       class="menu-button"
@@ -121,12 +125,24 @@ const base = import.meta.env.BASE_URL;
   .brand {
     display: flex;
     min-width: 0;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
     min-height: 2.75rem;
     line-height: 1.1;
     text-decoration: none;
     hyphens: manual;
+  }
+
+  .brand :global(.brand-mark) {
+    flex: none;
+    width: 2.125rem;
+    height: 2.125rem;
+  }
+
+  .brand-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
   }
 
   .brand-name {
