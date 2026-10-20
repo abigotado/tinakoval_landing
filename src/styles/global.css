@@ -7,11 +7,6 @@
   --plum-dark: #5a3f60;
   --ink: #2a2330;
   --muted: #5f5563;
-  --night: #2e2433;
-  --night-text: #efe8f0;
-  --night-muted: #c9bfcb;
-  --night-accent: #d9bee0;
-  --journal: #f7f3e8;
   --line: #d9d2d6;
   --line-strong: #c9c0c6;
   --line-olive: #c9cfc4;
@@ -20,7 +15,6 @@
   --sans:
     'Golos Text', 'Golos Fallback', system-ui, -apple-system, 'Segoe UI',
     Roboto, sans-serif;
-  --hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
 
   --gutter: 3rem;
   --section-y: 7.5rem;
@@ -43,7 +37,7 @@
     --gutter: 1.25rem;
     --section-y: 4.5rem;
     --header-h: calc(4.5rem + 1px);
-    /* Bottom booking bar (§5.14): 12 + 52 + 12 px plus the safe area. */
+    /* Bottom booking bar (§5.13): 12 + 52 + 12 px plus the safe area. */
     --dock-h: calc(4.75rem + 1px + env(safe-area-inset-bottom, 0px));
   }
 }

@@ -24,7 +24,6 @@ import {
   person,
   price,
   pricing,
-  privacy,
   schema,
   steps,
 } from '../content/ru';
@@ -32,7 +31,7 @@ import Base from '../layouts/Base.astro';
 
 const base = import.meta.env.BASE_URL;
 
-// Education scans open larger by a plain link to the file (§5.8, no gallery).
+// Education scans open larger by a plain link to the file (§5.11, no gallery).
 // Only page 1 of the diploma appendix and the ICTA certificate (AC-EDU-1).
 const documents = await Promise.all(
   [diploma, certificate].map(async (src, i) => ({
@@ -109,7 +108,7 @@ const jsonLd = {
         <h1 class="hero-title">
           {`${hero.titleLine1} `}
           <br />
-          {hero.titleLine2} <em>{hero.titleAccent}</em>
+          {hero.titleLine2}
         </h1>
         <p class="hero-subtitle">{hero.subtitle}</p>
         <p class="hero-lead">{hero.lead}</p>
@@ -141,10 +140,7 @@ const jsonLd = {
     <section class="container section familiar">
       <p class="eyebrow">{familiar.eyebrow}</p>
       <blockquote>
-        <p>
-          {familiar.quoteStart} <em>{familiar.quoteAccent}</em>
-          {familiar.quoteEnd}
-        </p>
+        <p>{familiar.quote}</p>
       </blockquote>
     </section>
 
@@ -186,80 +182,29 @@ const jsonLd = {
             <p>{pillar.text}</p>
           </li>
         ))}
-      </ul>
-    </section>
-
-    <section id="privacy" class="night" aria-labelledby="privacy-title">
-      <div class="container section night-inner">
-        <div class="night-text">
-          <svg
-            class="notebook"
-            aria-hidden="true"
-            width="64"
-            height="64"
-            viewBox="0 0 64 64"
-            focusable="false"
-          >
-            <path d="M12 14C22 12.8 34 12.6 42 13.5 43.2 26 43.4 40 42.5 53 32 54 22 53.8 12.8 52.6 11.6 40 11.4 26 12 14Z"></path>
-            <path d="M17.4 14C17.9 27 17.8 40 17.6 53"></path>
-            <path d="M22.5 22C25 20.6 27.8 23.2 30.6 21.6 32.8 20.6 35 22.2 37.5 21.4"></path>
-            <path d="M22.5 29C25 27.8 27.8 30.3 30.6 28.8 32.6 27.9 34 29.2 35.5 28.6"></path>
-            <path d="M22.5 36C24.6 34.9 26.8 37.1 29 35.9"></path>
-            <path d="M33.6 51.4 52 25C53 23.6 55.2 23.2 56.4 24.3 57.6 25.4 57.7 27.4 56.7 28.7L38.2 54.4 32.4 56.6Z"></path>
-            <path d="M33.6 51.4 38.2 54.4M49.4 28.7 53.9 31.9"></path>
-          </svg>
-          <p class="eyebrow">{privacy.eyebrow}</p>
-          <h2 id="privacy-title" class="h2">
-            {privacy.title}
-          </h2>
-          <ul class="night-list">
-            {privacy.items.map((item) => (
-              <li>{item}</li>
-            ))}
-          </ul>
-        </div>
-        <figure class="journal">
-          <figcaption class="visually-hidden">
-            {privacy.journalLabel}
-          </figcaption>
-          <p>
-            {privacy.journal.map((line) => (
-              <span>{line}</span>
-            ))}
-          </p>
-        </figure>
-      </div>
-    </section>
-
-    <section
-      id="education"
-      class="container section education"
-      aria-labelledby="education-title"
-    >
-      <h2 id="education-title" class="eyebrow">
-        {education.eyebrow}
-      </h2>
-      <ul class="docs">
-        {documents.map((doc) => (
-          <li class="doc">
-            <a class="doc-thumb" href={doc.full.src}>
-              <Image
-                src={doc.src}
-                width={112}
-                widths={[112, 224, 336]}
-                sizes="112px"
-                alt={doc.alt}
-                style={`object-position: ${doc.position}`}
-              />
-              <span class="visually-hidden">{education.open}</span>
-            </a>
-            <div class="doc-text">
-              <p class="doc-meta">{doc.meta}</p>
-              <h3>{doc.title}</h3>
-              <p>{doc.text}</p>
-            </div>
-          </li>
-        ))}
+        <li id="privacy">
+          <div class="pillar-figure">
+            <svg
+              class="notebook"
+              role="img"
+              aria-label={about.privacy.iconAlt}
+              width="76"
+              height="76"
+              viewBox="0 0 64 64"
+              focusable="false"
+            >
+              <path d="M12 14C22 12.8 34 12.6 42 13.5 43.2 26 43.4 40 42.5 53 32 54 22 53.8 12.8 52.6 11.6 40 11.4 26 12 14Z"></path>
+              <path d="M17.4 14C17.9 27 17.8 40 17.6 53"></path>
+              <path d="M22.5 22C25 20.6 27.8 23.2 30.6 21.6 32.8 20.6 35 22.2 37.5 21.4"></path>
+              <path d="M22.5 29C25 27.8 27.8 30.3 30.6 28.8 32.6 27.9 34 29.2 35.5 28.6"></path>
+              <path d="M22.5 36C24.6 34.9 26.8 37.1 29 35.9"></path>
+              <path d="M33.6 51.4 52 25C53 23.6 55.2 23.2 56.4 24.3 57.6 25.4 57.7 27.4 56.7 28.7L38.2 54.4 32.4 56.6Z"></path>
+              <path d="M33.6 51.4 38.2 54.4M49.4 28.7 53.9 31.9"></path>
+            </svg>
+          </div>
+          <h3>{about.privacy.title}</h3>
+          <p>{about.privacy.text}</p>
+        </li>
       </ul>
     </section>
 
@@ -360,6 +305,38 @@ const jsonLd = {
         </figcaption>
       </figure>
     </section>
+
+    <section
+      id="education"
+      class="container section education"
+      aria-labelledby="education-title"
+    >
+      <h2 id="education-title" class="eyebrow">
+        {education.eyebrow}
+      </h2>
+      <ul class="docs">
+        {documents.map((doc) => (
+          <li class="doc">
+            <a class="doc-thumb" href={doc.full.src}>
+              <Image
+                src={doc.src}
+                width={112}
+                widths={[112, 224, 336]}
+                sizes="112px"
+                alt={doc.alt}
+                style={`object-position: ${doc.position}`}
+              />
+              <span class="visually-hidden">{education.open}</span>
+            </a>
+            <div class="doc-text">
+              <p class="doc-meta">{doc.meta}</p>
+              <h3>{doc.title}</h3>
+              <p>{doc.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
   </main>
 
   <Footer withDock />
@@ -390,10 +367,6 @@ const jsonLd = {
     letter-spacing: -0.015em;
     text-wrap: balance;
     hyphens: manual;
-  }
-
-  .hero-title em {
-    color: var(--plum);
   }
 
   .hero-subtitle {
@@ -493,10 +466,6 @@ const jsonLd = {
     text-wrap: pretty;
   }
 
-  .familiar em {
-    color: var(--plum);
-  }
-
   /* Bands */
   .band {
     background: var(--olive);
@@ -576,26 +545,9 @@ const jsonLd = {
     line-height: 1.35;
   }
 
-  /* Конфиденциальность */
-  .night {
-    background: var(--night);
-    color: var(--night-text);
-  }
-
-  .night-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    align-items: center;
-    gap: 3.5rem 5rem;
-  }
-
-  .night .eyebrow {
-    color: var(--night-muted);
-  }
-
+  /* Конфиденциальность: the fourth pillar, a drawn notebook and pen. */
   .notebook {
-    margin-bottom: 1.25rem;
-    color: var(--night-accent);
+    overflow: visible;
   }
 
   .notebook path {
@@ -604,67 +556,13 @@ const jsonLd = {
     stroke-width: 1.4;
     stroke-linecap: round;
     stroke-linejoin: round;
-  }
-
-  .night-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.875rem;
-    max-width: 32em;
-    margin-top: 2rem;
-    padding: 0;
-    list-style: none;
-  }
-
-  .night-list li {
-    position: relative;
-    padding-left: 1.75rem;
-  }
-
-  .night-list li::before {
-    content: '';
-    position: absolute;
-    top: 0.8em;
-    left: 0;
-    width: 0.875rem;
-    height: 1px;
-    background: var(--night-accent);
-  }
-
-  .journal {
-    position: relative;
-    padding: 2.25rem 2rem 2.5rem 3.5rem;
-    border-radius: 6px;
-    background-color: var(--journal);
-    background-image:
-      linear-gradient(
-        90deg,
-        transparent 2.4375rem,
-        #e3c9cf 2.4375rem 2.5rem,
-        transparent 0
-      ),
-      repeating-linear-gradient(
-        transparent 0 2.1875rem,
-        #e4dcc8 2.1875rem 2.25rem
-      );
-    background-position: 0 2.25rem;
-    color: var(--ink);
-    box-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.6);
-  }
-
-  .journal p {
-    display: flex;
-    flex-direction: column;
-    font-family: var(--hand);
-    font-weight: 500;
-    font-size: 1.75rem;
-    line-height: 2.25rem;
-    hyphens: manual;
+    vector-effect: non-scaling-stroke;
   }
 
   /* Образование */
+  /* Last block before the footer; the contact section above gives the gap. */
   .education {
-    padding-bottom: 0;
+    padding-block: 0 4rem;
   }
 
   .docs {
@@ -889,7 +787,7 @@ const jsonLd = {
     font-weight: 600;
   }
 
-  /* The QR is for visitors on a computer; phones use the button (§5.12). */
+  /* The QR is for visitors on a computer; phones use the button (§5.10). */
   .contact-qr {
     display: flex;
     flex-direction: column;
@@ -1023,6 +921,11 @@ const jsonLd = {
       font-size: 1.125rem;
     }
 
+    .notebook {
+      width: 3.25rem;
+      height: 3.25rem;
+    }
+
     .pillars h3,
     .steps-list h3 {
       font-size: 1rem;
@@ -1110,16 +1013,12 @@ const jsonLd = {
       margin-top: 2rem;
     }
 
-    .night-inner {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .journal {
-      max-width: 30rem;
-    }
-
     .contact-qr {
       display: none;
+    }
+
+    .education {
+      padding-bottom: 2.5rem;
     }
 
     .doc-thumb :global(img) {
@@ -1139,14 +1038,6 @@ const jsonLd = {
   @media (max-width: 47.4375em) {
     .help-list {
       grid-template-columns: minmax(0, 1fr);
-    }
-
-    .journal {
-      padding: 1.75rem 1.25rem 2rem 3rem;
-    }
-
-    .journal p {
-      font-size: 1.625rem;
     }
   }
 
