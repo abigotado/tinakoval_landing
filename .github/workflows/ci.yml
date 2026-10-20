@@ -36,6 +36,5 @@ jobs:
       - run: npm run format:check
       - run: npm run check
       - run: npm run build
-      # Assertions live in lighthouserc.json. The placeholder page is noindex,
-      # so the `is-crawlable` audit is skipped there until launch.
+      # Assertions live in lighthouserc.json.
       - run: npx lhci autorun

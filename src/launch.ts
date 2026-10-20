@@ -1,6 +1,5 @@
 /**
- * TODO(launch): set to true when the real page ships and the client approves
- * indexing. Also remove `skipAudits` from lighthouserc.json.
- * Until then the page is noindex and the sitemap is not generated.
+ * Production is indexable since launch (landing.md §11). Stage builds stay
+ * noindex regardless (config.ts), and the sitemap is generated only here.
  */
-export const indexable = false;
+export const indexable = true;
