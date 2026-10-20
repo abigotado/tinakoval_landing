@@ -2,7 +2,7 @@
 import { thread } from '../content/ru';
 
 // «Клубок распутывается» (AC-THREAD-1): loops that fade into a straight line.
-// The path is computed at build time; the page ships a static SVG.
+// The path is computed at build time; CSS draws it once on load.
 const W = 1200;
 const H = 90;
 const POINTS = 480;
@@ -67,6 +67,25 @@ const phone = threadPath(9, 1.6);
     stroke-linecap: round;
     stroke-linejoin: round;
     vector-effect: non-scaling-stroke;
+  }
+
+  /* Revealed once, from the tangle to the straight line (§5.3, AC-THREAD-2).
+     A clip, not stroke-dashoffset: the stroke is non-scaling, so dash lengths
+     would be measured on screen and not along the path. */
+  @media (prefers-reduced-motion: no-preference) {
+    svg {
+      animation: thread-reveal 2.8s cubic-bezier(0.45, 0, 0.25, 1) 0.4s both;
+    }
+  }
+
+  @keyframes thread-reveal {
+    from {
+      clip-path: inset(-50% 110% -50% -10%);
+    }
+
+    to {
+      clip-path: inset(-50% -10% -50% -10%);
+    }
   }
 
   .thread-narrow {
