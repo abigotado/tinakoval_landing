@@ -5,8 +5,7 @@
       "numberOfRuns": 3,
       "settings": {
         "formFactor": "mobile",
-        "chromeFlags": "--no-sandbox --headless=new",
-        "skipAudits": ["is-crawlable"]
+        "chromeFlags": "--no-sandbox --headless=new"
       }
     },
     "assert": {
