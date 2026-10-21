@@ -66,7 +66,8 @@ type Props = Record<string, never>;
     color: var(--muted);
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .price {
       gap: 1.75rem 2rem;
       padding-block: 4rem;
@@ -85,7 +86,7 @@ type Props = Record<string, never>;
     }
   }
 
-  @media (width < 37.5em) and (orientation: portrait) {
+  @media (max-width: 37.4375em) and (orientation: portrait) {
     .price {
       flex-direction: column;
       align-items: stretch;

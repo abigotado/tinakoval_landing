@@ -23,14 +23,15 @@
   color-scheme: light;
 }
 
-@media (53.75em <= width < 71.875em) {
+@media (min-width: 53.75em) and (max-width: 71.8125em) {
   :root {
     /* The header nav wraps to a second row here (Header.astro). */
     --header-h: calc(6.625rem + 1px);
   }
 }
 
-@media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+@media (max-width: 53.6875em),
+  (orientation: landscape) and (max-height: 31.25em) {
   :root {
     --gutter: 1.25rem;
     --section-y: 4.5rem;
@@ -41,7 +42,7 @@
 }
 
 /* Landscape phone: a slimmer booking bar (Dock.astro). */
-@media (orientation: landscape) and (height <= 31.25em) {
+@media (orientation: landscape) and (max-height: 31.25em) {
   :root {
     --dock-h: calc(3.75rem + 1px + env(safe-area-inset-bottom, 0px));
   }
@@ -62,7 +63,7 @@ html {
 }
 
 /* Header and booking bar do not stick here (Header.astro, Dock.astro). */
-@media (height < 20em) {
+@media (max-height: 19.9375em) {
   html {
     scroll-padding-top: 0.5rem;
     scroll-padding-bottom: 0.5rem;
@@ -86,13 +87,14 @@ body {
 }
 
 /* Hyphenate only where long Russian words could overflow (AC-RWD-3). */
-@media (width < 30em) {
+@media (max-width: 29.9375em) {
   body {
     hyphens: auto;
   }
 }
 
-@media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+@media (max-width: 53.6875em),
+  (orientation: landscape) and (max-height: 31.25em) {
   body {
     font-size: 1rem;
   }
@@ -191,7 +193,8 @@ a {
   text-wrap: balance;
 }
 
-@media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+@media (max-width: 53.6875em),
+  (orientation: landscape) and (max-height: 31.25em) {
   .eyebrow {
     font-size: 0.75rem;
     letter-spacing: 0.14em;
@@ -223,7 +226,7 @@ a {
 }
 
 /* Very narrow, or a large system font: long button words may hyphenate. */
-@media (width < 22.5em) {
+@media (max-width: 22.4375em) {
   .btn {
     hyphens: auto;
   }

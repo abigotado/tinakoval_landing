@@ -104,7 +104,8 @@ type Props = Record<string, never>;
     color: var(--muted);
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .thread {
       padding-top: 1.25rem;
     }

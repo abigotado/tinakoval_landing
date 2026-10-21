@@ -106,7 +106,8 @@ type Props = Record<string, never>;
     vector-effect: non-scaling-stroke;
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .pillars {
       grid-template-columns: minmax(0, 1fr);
       gap: 1.75rem;
@@ -145,7 +146,7 @@ type Props = Record<string, never>;
   }
 
   /* Very narrow, or a large system font: the figures go above their text. */
-  @media (width < 22.5em) {
+  @media (max-width: 22.4375em) {
     .pillars li {
       grid-template-columns: minmax(0, 1fr);
     }

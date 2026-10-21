@@ -133,7 +133,7 @@ type Props = Record<string, never>;
     display: none;
   }
 
-  @media (width >= 71.875em) {
+  @media (min-width: 71.875em) {
     .portrait :global(.hero-mark) {
       display: block;
       position: absolute;
@@ -145,7 +145,7 @@ type Props = Record<string, never>;
   }
 
   /* Narrow desktop: keep the photo beside the text. */
-  @media (53.75em <= width < 71.875em) {
+  @media (min-width: 53.75em) and (max-width: 71.8125em) {
     .hero {
       gap: 3rem 2.5rem;
     }
@@ -162,7 +162,8 @@ type Props = Record<string, never>;
   /* Tablet, phone and landscape phone. The photo stays beside the text until
      the phone layout below stacks them. Display sizes are capped in vw so a
      large system font still fits a narrow phone. */
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .hero {
       flex-wrap: nowrap;
       gap: 2rem;
@@ -205,7 +206,7 @@ type Props = Record<string, never>;
   }
 
   /* Phone in portrait: photo above the text, full-width button. */
-  @media (width < 37.5em) and (orientation: portrait) {
+  @media (max-width: 37.4375em) and (orientation: portrait) {
     .hero {
       flex-direction: column;
       align-items: stretch;
@@ -239,7 +240,7 @@ type Props = Record<string, never>;
   }
 
   /* Landscape phone: the photo fits between the header and the booking bar. */
-  @media (orientation: landscape) and (height <= 31.25em) {
+  @media (orientation: landscape) and (max-height: 31.25em) {
     .hero {
       align-items: flex-start;
       padding-top: 1.25rem;

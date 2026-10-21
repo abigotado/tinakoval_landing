@@ -202,7 +202,7 @@ type Props = Record<string, never>;
   }
 
   /* Too narrow for one row: the nav gets its own row under name and button. */
-  @media (53.75em <= width < 71.875em) {
+  @media (min-width: 53.75em) and (max-width: 71.8125em) {
     .header-inner {
       flex-wrap: wrap;
       gap: 0 1.5rem;
@@ -220,7 +220,8 @@ type Props = Record<string, never>;
     }
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .header-inner {
       justify-content: space-between;
       gap: 0.75rem;
@@ -302,7 +303,7 @@ type Props = Record<string, never>;
 
   /* Very short screen with a large system font: the header scrolls away
      instead of covering most of the page, and the menu opens below it. */
-  @media (height < 20em) {
+  @media (max-height: 19.9375em) {
     .header {
       position: relative;
     }

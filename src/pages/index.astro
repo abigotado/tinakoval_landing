@@ -1,5 +1,4 @@
 ---
-import Base from '../layouts/Base.astro';
 import { getImage } from 'astro:assets';
 
 import portrait from '../assets/portrait.jpg';
@@ -17,6 +16,7 @@ import Price from '../components/home/Price.astro';
 import Steps from '../components/home/Steps.astro';
 import Thread from '../components/Thread.astro';
 import { contacts, meta, person, price, schema } from '../content/ru';
+import Base from '../layouts/Base.astro';
 
 const base = import.meta.env.BASE_URL;
 const siteUrl = new URL(base, Astro.site).href;

@@ -47,7 +47,8 @@ type Props = Record<string, never>;
     display: none;
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .dock {
       position: fixed;
       z-index: 10;
@@ -99,7 +100,7 @@ type Props = Record<string, never>;
     padding: 0 1rem;
   }
 
-  @media (orientation: landscape) and (height <= 31.25em) {
+  @media (orientation: landscape) and (max-height: 31.25em) {
     .dock {
       padding-top: 0.5rem;
       padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
@@ -111,7 +112,7 @@ type Props = Record<string, never>;
   }
 
   /* A large system font on a phone: the button alone, the price is on the page. */
-  @media (width < 20em) {
+  @media (max-width: 19.9375em) {
     .dock-price {
       display: none;
     }
@@ -119,7 +120,7 @@ type Props = Record<string, never>;
 
   /* Very short screen with a large system font: the bar sits at the end of
      the page instead of covering it. */
-  @media (height < 20em) {
+  @media (max-height: 19.9375em) {
     .dock {
       position: static;
     }

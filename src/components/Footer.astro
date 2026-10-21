@@ -62,7 +62,8 @@ const year = new Date().getFullYear();
     min-height: 2.75rem;
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .footer-inner {
       flex-direction: column;
       padding-block: 1.75rem;
@@ -77,7 +78,7 @@ const year = new Date().getFullYear();
     }
   }
 
-  @media (height < 20em) {
+  @media (max-height: 19.9375em) {
     .footer-dock .footer-inner {
       padding-bottom: 1.75rem;
     }

@@ -94,7 +94,8 @@ type Props = Record<string, never>;
     text-underline-offset: 0.25rem;
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .book {
       display: grid;
       grid-template-columns: 5.25rem minmax(0, 1fr);
@@ -130,7 +131,7 @@ type Props = Record<string, never>;
   }
 
   /* Very narrow, or a large system font: the cover goes above the text. */
-  @media (width < 22.5em) {
+  @media (max-width: 22.4375em) {
     .book {
       grid-template-columns: minmax(0, 1fr);
     }

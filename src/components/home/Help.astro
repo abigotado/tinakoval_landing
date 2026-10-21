@@ -55,7 +55,8 @@ type Props = Record<string, never>;
     color: var(--muted);
   }
 
-  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
     .help-list {
       margin-top: 2.25rem;
     }
@@ -70,7 +71,7 @@ type Props = Record<string, never>;
     }
   }
 
-  @media (width < 47.5em) {
+  @media (max-width: 47.4375em) {
     .help-list {
       grid-template-columns: minmax(0, 1fr);
     }
