@@ -35,12 +35,15 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   reset and shared primitives (`.container`, `.btn`, `.visually-hidden`). Delete
   global classes that nothing uses.
   [Styling](https://docs.astro.build/en/guides/styling/)
-- **Should** To style a child component, pass it a `class` prop and apply it to
-  the root element. Use `:global()` sparingly: the rendered `<img>` of
+- **Should** To style a child component, pass it a `class` prop and spread
+  `...rest` onto its root element: the parent's scope attribute travels in
+  `rest`, so the parent's scoped rule matches. Use `:global()` sparingly: the
+  rendered `<img>` of
   `<Image>`/`<Picture>` already carries the parent's scope attribute.
   [Styling: passing a class to a child](https://docs.astro.build/en/guides/styling/)
-- **Must** Since Astro 7, `compressHTML: 'jsx'` drops whitespace and line breaks
-  around elements. Write every space that matters explicitly (`{' '}`, a
+- **Must** Since Astro 7, `compressHTML: 'jsx'` drops whitespace that spans a
+  line break between elements and expressions; spaces within one line stay.
+  Where a space must survive a line break, write it explicitly (`{' '}`, a
   template string, or `&nbsp;`), and check the rendered text, not the source.
   [compressHTML](https://docs.astro.build/en/reference/configuration-reference/#compresshtml)
 - **Must** Build every internal URL and asset path from
@@ -66,9 +69,9 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
 - **Must** Make every script a progressive enhancement: without JS, all content
   and links work (AC-DOCK-2, AC-MOTION-2).
 - **Must** Read the `DEPLOY_ENV` build switch in one place only: `src/config.ts`
-  reads `process.env` (available both in `astro.config.mjs` and during the
-  static build) and exports `isStage` and `noindex`. Nothing else reads the
-  variable. `astro:env` is not available in `astro.config.mjs`, so it would add
+  reads `process.env` and exports `isStage` and `noindex`. `astro.config.mjs`
+  cannot read `import.meta.env`, so the switch module uses `process.env` (or
+  Vite's `loadEnv` for `.env` files). Nothing else reads the variable. `astro:env` is not available in `astro.config.mjs`, so it would add
   a second way to read the same switch.
   [Environment variables](https://docs.astro.build/en/guides/environment-variables/),
   [Astro 6 upgrade: import.meta.env](https://docs.astro.build/en/guides/upgrade-to/v6/)
@@ -88,8 +91,10 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   `<footer>` per page. Give a `<section>` an accessible name (`aria-labelledby`)
   only when it should appear as a region landmark.
   [APG landmark regions](https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/)
-- **Must** Use exactly one `<h1>` per page, and headings that never skip a
-  level. Choose the heading level for structure and set the size with a class.
+- **Must** Use headings that reflect the structure (WCAG 1.3.1); choose the
+  level for structure and set the size with a class.
+- **Should** Use exactly one `<h1>` per page and never skip a level. This is
+  a common practice, not a WCAG requirement.
   [WCAG 1.3.1](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html)
 - **Must** Use lists for lists (`<ul>` for items, `<ol>` for steps),
   `<blockquote>` for quotes and `<figure>`/`<figcaption>` for the QR code.
@@ -139,7 +144,9 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   [WCAG 1.4.3](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html),
   [WCAG 1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)
 - **Must** Serve self-hosted WOFF2 only, subset to Cyrillic and Latin, with
-  `font-display: swap`. Inline the `@font-face` rules in `<head>`.
+  `font-display: swap`: either Astro's built-in `fonts` config with a local
+  provider, or local files with `@font-face` rules inlined in `<head>` (today;
+  see open question 3).
   [Font best practices](https://web.dev/articles/font-best-practices)
 - **Must** Preload only the font of the first-screen heading, with
   `crossorigin`, because a preload that goes unused competes with the LCP image.
@@ -306,12 +313,18 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   deployment-branch policies on `release` and `github-pages`. Never echo them,
   and rotate any that leaks.
   [Managing environments](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
-- **Should** Do not restore a dependency cache in jobs that build what gets
-  deployed, as `deploy.yml` already does. Risks of this kind are listed in the
+- **Must** Do not restore a dependency cache in jobs that build what gets
+  deployed. Disable implicit caches per action: `setup-node` gets no `cache`
+  input and `package-manager-cache: false`, as in `deploy.yml`. Risks of this kind are listed in the
   [OWASP Top 10 CI/CD risks](https://owasp.org/www-project-top-10-ci-cd-security-risks/).
-- **Should** Keep a Dependabot `cooldown` on version updates. The default is 3
-  days; security updates are never delayed. That way a freshly published,
-  possibly compromised release is not merged on its first day.
+- **Must** Configure a Dependabot `cooldown` on version updates (ours: 7
+  days). Without it there is none; security updates are never delayed. That
+  way a freshly published, possibly compromised release is not proposed on its
+  first day.
+- **Should** Prefer OIDC over long-lived credentials wherever the target
+  supports it. The Pages deploy already uses OIDC (`id-token: write`); the
+  release deploy key stays only because pushing to `main` needs it.
+  [OpenID Connect](https://docs.github.com/en/actions/concepts/security/openid-connect)
   [Dependabot options: cooldown](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference)
 - **Should** Verify the custom domain in the account's Pages settings and keep
   "Enforce HTTPS" on, so nobody can take the domain over.
@@ -327,8 +340,11 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   `.astro/types.d.ts` and exclude `dist`. Run `astro check` in CI, because
   `astro build` does not type-check.
   [TypeScript guide](https://docs.astro.build/en/guides/typescript/)
-- **Must** Use `import type` for types. `verbatimModuleSyntax` in the preset
-  enforces it.
+- **Must** Use `import type` for types in TypeScript and Astro frontmatter
+  (not in `.mjs` files). `verbatimModuleSyntax` in the preset enforces it.
+- **Should** In client scripts, narrow DOM lookups with `instanceof`
+  (`el instanceof HTMLButtonElement`) instead of a typed `querySelector<…>`
+  generic, which only asserts the type.
   [TypeScript guide](https://docs.astro.build/en/guides/typescript/)
 - **Should** Avoid non-null assertions (`!`) and `as` casts. Narrow with a check
   instead. A `!` that the current config does not need is dead noise; with
