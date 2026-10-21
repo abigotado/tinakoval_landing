@@ -179,7 +179,7 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   [WAI: decorative images](https://www.w3.org/WAI/tutorials/images/decorative/)
 - **Must** Build the phone menu as a disclosure: a real `<button>` with
   `aria-expanded` and `aria-controls`, closing on Esc (focus back to the button)
-  and when focus leaves the navigation. Do not use `role="menu"` for site
+  and when focus leaves the header. Do not use `role="menu"` for site
   navigation.
   [APG disclosure navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/)
 - **Must** Put `inert` (not just `visibility`/`opacity`) on content that is
@@ -369,20 +369,23 @@ Options, with no tool added without the owner's agreement:
 
 ## Known gaps
 
-The audit of 2026-10-20 found the code breaking these Must rules. They are fixed
-in the follow-up PRs; remove an item when its fix lands.
+The audit of 2026-10-20 found the code breaking these Must rules. They will be
+fixed in follow-up PRs; remove an item when its fix lands.
 
 - §1 script fallback: below 860 px the phone navigation needs JS to open
   (`Header.astro`).
-- §1 `sizes`: the portrait says 420px where the CSS renders 320 px between 860
-  and 1149 px (`index.astro`).
+- §1 `sizes` (`index.astro`): the portrait says 420 px where the CSS renders 320
+  px between 860 and 1149 px, and 280 px where it renders about 246 px between
+  600 and 859 px; the education thumbnails say 112 px where they render 84 px
+  below 860 px.
 - §1 props: `Header`, `Dock` and `Thread` declare no `Props`.
 - §1 global CSS order: pages import components before `Base`, so `global.css`
   loads after component CSS.
 - §2 tokens: raw colours in `Dock.astro`, `global.css`, the WHO cover and
   `theme-color` in `Base.astro`.
 - §2 motion: the dock's show/hide transition is not gated by
-  `prefers-reduced-motion`.
+  `prefers-reduced-motion`, and spec §7 does not list it among the allowed
+  animations (add it to the spec or drop it).
 - §7 copy: separators and the hero price string are assembled in markup.
 
 ## Open questions

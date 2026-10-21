@@ -1,3 +1,4 @@
+// The .ts extension lets Node load astro.config.mjs natively (no Vite fallback).
 import { indexable } from './launch.ts';
 
 /**
