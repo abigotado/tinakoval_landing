@@ -85,7 +85,8 @@ type Props = Record<string, never>;
       setOpen(button.getAttribute('aria-expanded') !== 'true'),
     );
     menu.addEventListener('click', (event) => {
-      const link = (event.target as Element).closest('a');
+      if (!(event.target instanceof Element)) return;
+      const link = event.target.closest('a');
       if (!link || !menu.hasAttribute('data-open')) return;
       setOpen(false, true);
       // A same-page anchor would move focus away from the button, so scroll
@@ -105,8 +106,8 @@ type Props = Record<string, never>;
       }
     });
     header.addEventListener('focusout', (event) => {
-      const next = event.relatedTarget as Node | null;
-      if (next && !header.contains(next)) setOpen(false);
+      const next = event.relatedTarget;
+      if (next instanceof Node && !header.contains(next)) setOpen(false);
     });
   }
 </script>
