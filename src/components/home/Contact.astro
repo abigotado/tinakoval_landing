@@ -1,0 +1,129 @@
+---
+import TelegramQr from '../../assets/telegram-qr.svg';
+import { contact, contacts } from '../../content/ru';
+import ExternalLink from '../ExternalLink.astro';
+
+type Props = Record<string, never>;
+---
+
+<section id="contact" class="container contact" aria-labelledby="contact-title">
+  <div>
+    <p class="eyebrow">{contact.eyebrow}</p>
+    <h2 id="contact-title" class="contact-title">
+      {contact.title}
+    </h2>
+    <div class="contact-actions">
+      <ExternalLink class="btn btn-primary" href={contacts.telegram.href}>
+        {contact.cta}
+      </ExternalLink>
+      <p class="contact-handle">
+        {`${contacts.telegram.label} `}
+        <b>{contacts.telegram.handle}</b>
+      </p>
+    </div>
+  </div>
+  <figure class="contact-qr">
+    <TelegramQr role="img" aria-label={contact.qrAlt} />
+    <figcaption>
+      {`${contact.qrHint} `}
+      <b>{contacts.telegram.link}</b>
+    </figcaption>
+  </figure>
+</section>
+
+<style>
+  .contact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2.5rem 4rem;
+    padding-block: 2.5rem 6rem;
+  }
+
+  .contact-title {
+    max-width: 11em;
+    margin-top: 1.125rem;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .contact-handle {
+    color: var(--muted);
+  }
+
+  .contact-handle b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* The QR is for visitors on a computer; phones use the button (§5.10). */
+  .contact-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.625rem;
+    width: 11rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .contact-qr b {
+    display: block;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .contact-qr :global(svg) {
+    width: 11rem;
+    height: 11rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
+    .contact {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: 1.5rem 3.5rem;
+    }
+
+    .contact-title {
+      margin-top: 1rem;
+      font-size: min(2.875rem, 14.4vw);
+      line-height: 1.05;
+    }
+
+    .contact-actions {
+      margin-top: 2rem;
+    }
+
+    .contact-qr {
+      display: none;
+    }
+  }
+
+  @media (max-width: 37.4375em) and (orientation: portrait) {
+    .contact-actions {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+
+    .contact-actions :global(.btn) {
+      padding-inline: 1rem;
+    }
+  }
+</style>

@@ -2,6 +2,8 @@
 import { dock, price } from '../content/ru';
 
 const base = import.meta.env.BASE_URL;
+
+type Props = Record<string, never>;
 ---
 
 <div class="dock" data-dock>
@@ -50,9 +52,8 @@ const base = import.meta.env.BASE_URL;
     .dock {
       position: fixed;
       z-index: 10;
-      right: 0;
+      inset-inline: 0;
       bottom: 0;
-      left: 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -94,7 +95,7 @@ const base = import.meta.env.BASE_URL;
     flex: 1 1 10rem;
     min-width: 0;
     max-width: 24rem;
-    margin-left: auto;
+    margin-inline-start: auto;
     min-height: 3.25rem;
     padding: 0 1rem;
   }
