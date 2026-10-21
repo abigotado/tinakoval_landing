@@ -113,7 +113,9 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
 - **Must** Make the layout work at 320 CSS px without horizontal scrolling.
   [WCAG 1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)
 - **Should** Write media queries as `min-width`/`max-width` in `em`, and set
-  `vite.build.cssTarget` to the oldest engines we serve. Then the minifier
+  `vite.build.cssTarget` to the oldest engines we serve, naming iOS separately
+  (`ios15` next to `safari15`, or iPhone-only prefixes such as
+  `-webkit-text-size-adjust` are dropped). Then the minifier
   (Lightning CSS) emits plain `min-`/`max-` queries in `dist/`. Range syntax
   (`width < 53.75em`) needs Safari 16.4+. Lowered for older targets, it becomes
   `not (min-width: …)`, which is newer grammar as well.
@@ -210,9 +212,10 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   which is the `<Image>` default.
   [Choose the right image format](https://web.dev/articles/choose-the-right-image-format)
 - **Should** Inline the site CSS into the HTML
-  (`build.inlineStylesheets: 'always'`). Today there are two render-blocking
-  stylesheets of about 5 KB gzipped in total. On a single-page site the extra
-  round trip costs more than the lost caching. Measure LCP before and after.
+  (`build.inlineStylesheets: 'always'`, on). It removes the render-blocking
+  stylesheet requests; the home page grew from 12.6 to 17.8 KB gzipped. On a
+  single-page site the extra round trip costs more than the lost caching.
+  Lighthouse CI keeps watching LCP.
   [Optimize LCP: render-blocking CSS](https://web.dev/articles/optimize-lcp),
   [build.inlineStylesheets](https://docs.astro.build/en/reference/configuration-reference/#buildinlinestylesheets)
 - **Must** Keep client JS within the budget (≤ 5 KB, AC-PERF-2): no frameworks,
@@ -371,7 +374,7 @@ Options, with no tool added without the owner's agreement:
 
 ## Known gaps
 
-The audit of 2026-10-20 found the code breaking these Must rules. They will be
+The audit of 2026-10-20 found the code breaking these rules. They will be
 fixed in follow-up PRs; remove an item when its fix lands.
 
 - §1 global CSS order: pages import components before `Base`, so `global.css`

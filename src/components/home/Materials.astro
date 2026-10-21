@@ -54,9 +54,10 @@ type Props = Record<string, never>;
     aspect-ratio: 3 / 4;
     padding: 0.8125rem;
     border-radius: 4px 8px 8px 4px;
-    /* Colours of the real WHO cover, deliberately outside the palette. */
+    /* Colours of the real WHO cover and its shadow, deliberately outside the
+       palette. */
     background: linear-gradient(160deg, #2b6fa3 0%, #1f5d8f 100%);
-    color: #fff;
+    color: var(--on-dark);
     font-size: 0.625rem;
     line-height: 1.25;
     box-shadow: 0 16px 30px -18px rgb(0 0 0 / 0.5);

@@ -314,23 +314,28 @@ type Props = Record<string, never>;
     }
   }
 
-  /* Without JS the menu button cannot open the phone menu, so the links wrap
-     under the name instead, and the taller header scrolls away with the page. */
-  @media (scripting: none) and (max-width: 53.6875em),
-    (scripting: none) and (orientation: landscape) and (max-height: 31.25em) {
-    .header {
+  /* Without JS (no data-js flag from Base) the menu button cannot open the
+     phone menu, so the links wrap under the name instead, and the taller header
+     scrolls away with the page (AC-HEADER-3). */
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
+    :global(html:not([data-js])) {
+      scroll-padding-top: 0.5rem;
+    }
+
+    :global(html:not([data-js])) .header {
       position: relative;
     }
 
-    .header-inner {
+    :global(html:not([data-js])) .header-inner {
       flex-wrap: wrap;
     }
 
-    .menu-button {
+    :global(html:not([data-js])) .menu-button {
       display: none;
     }
 
-    .nav {
+    :global(html:not([data-js])) .nav {
       display: block;
       position: static;
       flex-basis: 100%;
@@ -339,13 +344,13 @@ type Props = Record<string, never>;
       background: none;
     }
 
-    .nav-list {
+    :global(html:not([data-js])) .nav-list {
       flex-flow: row wrap;
       gap: 0 1.25rem;
     }
 
-    .nav-list a,
-    .nav-contact {
+    :global(html:not([data-js])) .nav-list a,
+    :global(html:not([data-js])) .nav-contact {
       min-height: 2.75rem;
       margin: 0;
       padding: 0;

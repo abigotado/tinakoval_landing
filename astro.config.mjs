@@ -11,6 +11,9 @@ export default defineConfig({
   integrations: noindex ? [] : [sitemap()],
   build: { inlineStylesheets: 'always' },
   // The CSS minifier (Lightning CSS) would otherwise emit media query range
-  // syntax, which Safari before 16.4 ignores (iPhones stuck on iOS 15).
-  vite: { build: { cssTarget: ['safari15', 'chrome100', 'firefox100'] } },
+  // syntax, which Safari before 16.4 ignores (iPhones stuck on iOS 15). The
+  // ios target keeps prefixes iPhones still need (-webkit-text-size-adjust).
+  vite: {
+    build: { cssTarget: ['safari15', 'ios15', 'chrome100', 'firefox100'] },
+  },
 });

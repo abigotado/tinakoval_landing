@@ -39,7 +39,7 @@ type Props = Record<string, never>;
       src={portrait}
       formats={['avif', 'webp']}
       widths={[200, 400, 600, 840]}
-      sizes="(orientation: landscape) and (max-height: 31.25em) 160px, (max-width: 37.4375em) 200px, (max-width: 53.6875em) 32vw, (max-width: 71.8125em) 320px, 420px"
+      sizes="(orientation: landscape) and (max-height: 31.25em) calc((100vh - 11.5rem) * 0.8), (max-width: 37.4375em) 200px, (max-width: 53.6875em) 32vw, (max-width: 71.8125em) 320px, 420px"
       alt={hero.photoAlt}
       priority
     />
