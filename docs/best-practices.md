@@ -376,11 +376,10 @@ fixed in follow-up PRs; remove an item when its fix lands.
 
 - §1 script fallback: below 860 px the phone navigation needs JS to open
   (`Header.astro`).
-- §1 `sizes` (`index.astro`): the portrait says 420 px where the CSS renders 320
+- §1 `sizes` (`Hero.astro`, `Education.astro`): the portrait says 420 px where the CSS renders 320
   px between 860 and 1149 px, and 280 px where it renders about 246 px between
   600 and 859 px; the education thumbnails say 112 px where they render 84 px
   below 860 px.
-- §1 props: `Header`, `Dock` and `Thread` declare no `Props`.
 - §1 global CSS order: pages import components before `Base`, so `global.css`
   loads after component CSS.
 - §2 tokens: raw colours in `Dock.astro`, `global.css`, the WHO cover and
