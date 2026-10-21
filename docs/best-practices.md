@@ -112,9 +112,11 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   even with `px`).
 - **Must** Make the layout work at 320 CSS px without horizontal scrolling.
   [WCAG 1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)
-- **Should** Write media queries in range syntax, e.g. `(width < 53.75em)`
-  rather than `(max-width: 53.6875em)`. It is Baseline and has no
-  off-by-a-fraction gaps. Keep breakpoints in `em`.
+- **Should** Write media queries as `min-width`/`max-width` in `em`, and set
+  `vite.build.cssTarget` to the oldest engines we serve. Then the minifier
+  (Lightning CSS) emits plain `min-`/`max-` queries in `dist/`. Range syntax
+  (`width < 53.75em`) needs Safari 16.4+. Lowered for older targets, it becomes
+  `not (min-width: …)`, which is newer grammar as well.
   [Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Media_queries/Using)
 - **Should** Use media queries for page layout (header, hero, grids). Reach for
   a container query only when the same component must adapt to different column
@@ -387,6 +389,9 @@ fixed in follow-up PRs; remove an item when its fix lands.
   `prefers-reduced-motion`, and spec §7 does not list it among the allowed
   animations (add it to the spec or drop it).
 - §7 copy: separators and the hero price string are assembled in markup.
+- §1 media queries: no `cssTarget` is set, so `dist/` ships range syntax
+  that Safari below 16.4 ignores (no mobile layout there). The source also
+  leaves 1/16em gaps (`max-width: 53.6875em` vs `min-width: 53.75em`).
 
 ## Open questions
 
