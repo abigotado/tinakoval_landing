@@ -8,7 +8,6 @@
   --ink: #2a2330;
   --muted: #5f5563;
   --line: #d9d2d6;
-  --line-strong: #c9c0c6;
   --line-olive: #c9cfc4;
 
   --serif: 'Spectral', 'Spectral Fallback', Georgia, serif;
@@ -24,7 +23,7 @@
   color-scheme: light;
 }
 
-@media (max-width: 71.8125em) and (min-width: 53.75em) {
+@media (min-width: 53.75em) and (max-width: 71.8125em) {
   :root {
     /* The header nav wraps to a second row here (Header.astro). */
     --header-h: calc(6.625rem + 1px);
@@ -149,7 +148,7 @@ a {
   position: absolute;
   z-index: 100;
   top: 0.5rem;
-  left: 0.5rem;
+  inset-inline-start: 0.5rem;
   padding: 0.625rem 1rem;
   border-radius: 8px;
   background: var(--ink);
@@ -206,6 +205,10 @@ a {
   }
 }
 
+.band {
+  background: var(--olive);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -234,20 +237,10 @@ a {
   color: #fff;
 }
 
-.btn-outline {
-  border-color: var(--line-strong);
-  color: var(--ink);
-}
-
 @media (hover: hover) {
   .btn-primary:hover {
     background: var(--plum-dark);
     color: #fff;
-  }
-
-  .btn-outline:hover {
-    border-color: var(--plum);
-    color: var(--plum);
   }
 }
 

@@ -1,0 +1,158 @@
+---
+import { about } from '../../content/ru';
+
+type Props = Record<string, never>;
+---
+
+<section id="about" class="container section" aria-labelledby="about-title">
+  <p class="eyebrow">{about.eyebrow}</p>
+  <h2 id="about-title" class="h2">
+    {about.title}
+  </h2>
+  <ul class="pillars">
+    {about.pillars.map((pillar) => (
+      <li>
+        <p class="pillar-figure" aria-hidden="true">
+          {pillar.figure}
+          {pillar.unit && <span>{pillar.unit}</span>}
+        </p>
+        <h3>
+          <span class="visually-hidden">
+            {`${pillar.figure} ${pillar.unit} `}
+          </span>
+          {pillar.title}
+        </h3>
+        <p>{pillar.text}</p>
+      </li>
+    ))}
+    <li id="privacy">
+      <div class="pillar-figure">
+        <svg
+          class="notebook"
+          role="img"
+          aria-label={about.privacy.iconAlt}
+          width="76"
+          height="76"
+          viewBox="0 0 64 64"
+          focusable="false"
+        >
+          <path d="M12 14C22 12.8 34 12.6 42 13.5 43.2 26 43.4 40 42.5 53 32 54 22 53.8 12.8 52.6 11.6 40 11.4 26 12 14Z"></path>
+          <path d="M17.4 14C17.9 27 17.8 40 17.6 53"></path>
+          <path d="M22.5 22C25 20.6 27.8 23.2 30.6 21.6 32.8 20.6 35 22.2 37.5 21.4"></path>
+          <path d="M22.5 29C25 27.8 27.8 30.3 30.6 28.8 32.6 27.9 34 29.2 35.5 28.6"></path>
+          <path d="M22.5 36C24.6 34.9 26.8 37.1 29 35.9"></path>
+          <path d="M33.6 51.4 52 25C53 23.6 55.2 23.2 56.4 24.3 57.6 25.4 57.7 27.4 56.7 28.7L38.2 54.4 32.4 56.6Z"></path>
+          <path d="M33.6 51.4 38.2 54.4M49.4 28.7 53.9 31.9"></path>
+        </svg>
+      </div>
+      <h3>{about.privacy.title}</h3>
+      <p>{about.privacy.text}</p>
+    </li>
+  </ul>
+</section>
+
+<style>
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(13.75rem, 100%), 1fr));
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pillars p:not(.pillar-figure) {
+    max-width: 30em;
+    color: var(--muted);
+  }
+
+  .pillars li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .pillar-figure {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 5.25rem;
+    line-height: 1;
+    color: var(--plum);
+  }
+
+  .pillar-figure span {
+    margin-inline-start: 0.5rem;
+    font-size: 1.875rem;
+    color: var(--muted);
+  }
+
+  .pillars h3 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  /* Конфиденциальность: the fourth pillar, a drawn notebook and pen. */
+  .notebook {
+    overflow: visible;
+  }
+
+  .notebook path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
+    .pillars {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.75rem;
+      margin-top: 2.25rem;
+    }
+
+    .pillars li {
+      display: grid;
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: 0.25rem 1rem;
+      align-items: start;
+    }
+
+    .pillar-figure {
+      grid-row: span 2;
+      font-size: min(2.75rem, 13.75vw);
+    }
+
+    .pillar-figure span {
+      margin-inline-start: 0.375rem;
+      font-size: 1.125rem;
+    }
+
+    .notebook {
+      width: 3.25rem;
+      height: 3.25rem;
+    }
+
+    .pillars h3 {
+      font-size: 1rem;
+    }
+
+    .pillars p:not(.pillar-figure) {
+      font-size: 0.9375rem;
+    }
+  }
+
+  /* Very narrow, or a large system font: the figures go above their text. */
+  @media (max-width: 22.4375em) {
+    .pillars li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pillar-figure {
+      grid-row: auto;
+    }
+  }
+</style>
