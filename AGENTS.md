@@ -79,6 +79,10 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 
 - Page markup follows the final Claude Design mockup together with its canvas
   comments (D-13); do not invent design.
+- Engineering rules (Astro, HTML/CSS, accessibility, performance, SEO,
+  security, TypeScript, quality gates) are in `docs/best-practices.md`, each
+  marked Must or Should with its source. Code review and audits check against
+  it.
 - All pages use `src/layouts/Base.astro` (`lang="ru"`, meta, robots).
 - Use `import.meta.env.BASE_URL` for asset URLs, since stage is served under
   `/stage/`.
