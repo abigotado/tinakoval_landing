@@ -4,6 +4,8 @@ import ExternalLink from './ExternalLink.astro';
 import Mark from './Mark.astro';
 
 const base = import.meta.env.BASE_URL;
+
+type Props = Record<string, never>;
 ---
 
 <a class="skip-link" href="#main">
@@ -162,7 +164,7 @@ const base = import.meta.env.BASE_URL;
   }
 
   .nav {
-    margin-left: auto;
+    margin-inline-start: auto;
   }
 
   .nav-list {
@@ -200,7 +202,7 @@ const base = import.meta.env.BASE_URL;
   }
 
   /* Too narrow for one row: the nav gets its own row under name and button. */
-  @media (max-width: 71.8125em) and (min-width: 53.75em) {
+  @media (53.75em <= width < 71.875em) {
     .header-inner {
       flex-wrap: wrap;
       gap: 0 1.5rem;
@@ -210,16 +212,15 @@ const base = import.meta.env.BASE_URL;
     .nav {
       order: 3;
       flex-basis: 100%;
-      margin-left: 0;
+      margin-inline-start: 0;
     }
 
     .header-cta {
-      margin-left: auto;
+      margin-inline-start: auto;
     }
   }
 
-  @media (max-width: 53.6875em),
-    (orientation: landscape) and (max-height: 31.25em) {
+  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
     .header-inner {
       justify-content: space-between;
       gap: 0.75rem;
@@ -301,7 +302,7 @@ const base = import.meta.env.BASE_URL;
 
   /* Very short screen with a large system font: the header scrolls away
      instead of covering most of the page, and the menu opens below it. */
-  @media (max-height: 19.9375em) {
+  @media (height < 20em) {
     .header {
       position: relative;
     }

@@ -1,0 +1,94 @@
+---
+import { steps } from '../../content/ru';
+
+type Props = Record<string, never>;
+---
+
+<section class="container steps" aria-labelledby="steps-title">
+  <p class="eyebrow">{steps.eyebrow}</p>
+  <h2 id="steps-title" class="h2">
+    {steps.title}
+  </h2>
+  <ol class="steps-list">
+    {steps.items.map((step, i) => (
+      <li>
+        <span class="step-number" aria-hidden="true">
+          {i + 1}
+        </span>
+        <h3>{step.title}</h3>
+        <p>{step.text}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .steps {
+    padding-block: var(--section-y);
+  }
+
+  .steps-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem 3rem;
+    margin-top: 3.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps-list h3 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .steps-list p {
+    max-width: 30em;
+    color: var(--muted);
+  }
+
+  .steps-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding-top: 1.375rem;
+    border-top: 1px solid var(--ink);
+  }
+
+  .step-number {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 2.125rem;
+    line-height: 1;
+    color: var(--plum);
+  }
+
+  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+    .steps-list {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.75rem;
+      margin-top: 2.25rem;
+    }
+
+    .steps-list h3 {
+      font-size: 1rem;
+    }
+
+    .steps-list p {
+      font-size: 0.9375rem;
+    }
+
+    .steps-list li {
+      display: grid;
+      grid-template-columns: 2.25rem minmax(0, 1fr);
+      gap: 0.25rem 0.75rem;
+      padding-top: 1.125rem;
+    }
+
+    .step-number {
+      grid-row: span 2;
+      font-size: 1.875rem;
+    }
+  }
+</style>

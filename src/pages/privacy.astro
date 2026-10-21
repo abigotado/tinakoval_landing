@@ -72,8 +72,7 @@ import Base from '../layouts/Base.astro';
     margin-top: 0.75rem;
   }
 
-  @media (max-width: 53.6875em),
-    (orientation: landscape) and (max-height: 31.25em) {
+  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
     .policy {
       padding-block: 2.5rem 4rem;
     }

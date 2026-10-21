@@ -1,0 +1,32 @@
+---
+import { familiar } from '../../content/ru';
+
+type Props = Record<string, never>;
+---
+
+<section class="container section familiar">
+  <p class="eyebrow">{familiar.eyebrow}</p>
+  <blockquote>
+    <p>{familiar.quote}</p>
+  </blockquote>
+</section>
+
+<style>
+  .familiar blockquote {
+    max-width: 21em;
+    margin-top: 1.5rem;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2rem, 3.6vw, 3.25rem);
+    line-height: 1.22;
+    text-wrap: pretty;
+  }
+
+  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+    .familiar blockquote {
+      margin-top: 1.125rem;
+      font-size: min(1.8125rem, 9.1vw);
+      line-height: 1.24;
+    }
+  }
+</style>

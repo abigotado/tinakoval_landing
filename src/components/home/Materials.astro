@@ -1,0 +1,138 @@
+---
+import { materials } from '../../content/ru';
+import ExternalLink from '../ExternalLink.astro';
+
+type Props = Record<string, never>;
+---
+
+<section
+  id="materials"
+  class="container section"
+  aria-labelledby="materials-title"
+>
+  <p class="eyebrow">{materials.eyebrow}</p>
+  <h2 id="materials-title" class="h2">
+    {materials.title}
+  </h2>
+  <article class="book">
+    <div class="book-cover" aria-hidden="true">
+      <b>{materials.book.cover}</b>
+      <span>
+        <span class="book-cover-kind">{materials.book.coverKind}</span>
+        {materials.book.coverSource}
+      </span>
+    </div>
+    <div class="book-text">
+      <h3>{materials.book.title}</h3>
+      <p>{materials.book.text}</p>
+      <ExternalLink class="book-link" href={materials.book.href}>
+        {materials.book.link}
+      </ExternalLink>
+    </div>
+  </article>
+</section>
+
+<style>
+  .book {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.75rem;
+    max-width: 55rem;
+    margin-top: 3.5rem;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .book-cover {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 8rem;
+    aspect-ratio: 3 / 4;
+    padding: 0.8125rem;
+    border-radius: 4px 8px 8px 4px;
+    background: linear-gradient(160deg, #2b6fa3 0%, #1f5d8f 100%);
+    color: #fff;
+    font-size: 0.625rem;
+    line-height: 1.25;
+    box-shadow: 0 16px 30px -18px rgb(0 0 0 / 0.5);
+    hyphens: manual;
+  }
+
+  .book-cover b {
+    font-size: 0.8125rem;
+  }
+
+  .book-text {
+    flex: 1 1 22.5rem;
+    min-width: 0;
+  }
+
+  .book-text h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+
+  .book-text p {
+    max-width: 36em;
+    margin-top: 0.625rem;
+    color: var(--muted);
+  }
+
+  .book-text :global(.book-link) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-top: 0.5rem;
+    color: var(--plum);
+    font-weight: 500;
+    text-underline-offset: 0.25rem;
+  }
+
+  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+    .book {
+      display: grid;
+      grid-template-columns: 5.25rem minmax(0, 1fr);
+      align-items: start;
+      gap: 1.125rem;
+      margin-top: 2rem;
+      padding: 1.25rem;
+      border-radius: 14px;
+    }
+
+    .book-cover {
+      width: 5.25rem;
+      padding: 0.5rem;
+      font-size: 0.5625rem;
+    }
+
+    .book-cover b {
+      font-size: 0.625rem;
+    }
+
+    .book-cover-kind {
+      display: none;
+    }
+
+    .book-text h3 {
+      font-size: 1.375rem;
+    }
+
+    .book-text p {
+      margin-top: 0.5rem;
+      font-size: 0.9375rem;
+    }
+  }
+
+  /* Very narrow, or a large system font: the cover goes above the text. */
+  @media (width < 22.5em) {
+    .book {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

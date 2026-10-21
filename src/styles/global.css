@@ -8,7 +8,6 @@
   --ink: #2a2330;
   --muted: #5f5563;
   --line: #d9d2d6;
-  --line-strong: #c9c0c6;
   --line-olive: #c9cfc4;
 
   --serif: 'Spectral', 'Spectral Fallback', Georgia, serif;
@@ -24,15 +23,14 @@
   color-scheme: light;
 }
 
-@media (max-width: 71.8125em) and (min-width: 53.75em) {
+@media (53.75em <= width < 71.875em) {
   :root {
     /* The header nav wraps to a second row here (Header.astro). */
     --header-h: calc(6.625rem + 1px);
   }
 }
 
-@media (max-width: 53.6875em),
-  (orientation: landscape) and (max-height: 31.25em) {
+@media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
   :root {
     --gutter: 1.25rem;
     --section-y: 4.5rem;
@@ -43,7 +41,7 @@
 }
 
 /* Landscape phone: a slimmer booking bar (Dock.astro). */
-@media (orientation: landscape) and (max-height: 31.25em) {
+@media (orientation: landscape) and (height <= 31.25em) {
   :root {
     --dock-h: calc(3.75rem + 1px + env(safe-area-inset-bottom, 0px));
   }
@@ -64,7 +62,7 @@ html {
 }
 
 /* Header and booking bar do not stick here (Header.astro, Dock.astro). */
-@media (max-height: 19.9375em) {
+@media (height < 20em) {
   html {
     scroll-padding-top: 0.5rem;
     scroll-padding-bottom: 0.5rem;
@@ -88,14 +86,13 @@ body {
 }
 
 /* Hyphenate only where long Russian words could overflow (AC-RWD-3). */
-@media (max-width: 29.9375em) {
+@media (width < 30em) {
   body {
     hyphens: auto;
   }
 }
 
-@media (max-width: 53.6875em),
-  (orientation: landscape) and (max-height: 31.25em) {
+@media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
   body {
     font-size: 1rem;
   }
@@ -149,7 +146,7 @@ a {
   position: absolute;
   z-index: 100;
   top: 0.5rem;
-  left: 0.5rem;
+  inset-inline-start: 0.5rem;
   padding: 0.625rem 1rem;
   border-radius: 8px;
   background: var(--ink);
@@ -194,8 +191,7 @@ a {
   text-wrap: balance;
 }
 
-@media (max-width: 53.6875em),
-  (orientation: landscape) and (max-height: 31.25em) {
+@media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
   .eyebrow {
     font-size: 0.75rem;
     letter-spacing: 0.14em;
@@ -204,6 +200,10 @@ a {
   .h2 {
     margin-top: 0.875rem;
   }
+}
+
+.band {
+  background: var(--olive);
 }
 
 .btn {
@@ -223,7 +223,7 @@ a {
 }
 
 /* Very narrow, or a large system font: long button words may hyphenate. */
-@media (max-width: 22.4375em) {
+@media (width < 22.5em) {
   .btn {
     hyphens: auto;
   }
@@ -234,20 +234,10 @@ a {
   color: #fff;
 }
 
-.btn-outline {
-  border-color: var(--line-strong);
-  color: var(--ink);
-}
-
 @media (hover: hover) {
   .btn-primary:hover {
     background: var(--plum-dark);
     color: #fff;
-  }
-
-  .btn-outline:hover {
-    border-color: var(--plum);
-    color: var(--plum);
   }
 }
 

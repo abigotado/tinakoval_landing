@@ -1,0 +1,146 @@
+---
+import { getImage, Image } from 'astro:assets';
+
+import certificate from '../../assets/certificate-icta.jpg';
+import diploma from '../../assets/diploma-appendix-p1.jpg';
+import { education } from '../../content/ru';
+
+// Education scans open larger by a plain link to the file (§5.11, no gallery).
+// Only page 1 of the diploma appendix and the ICTA certificate (AC-EDU-1).
+// Each scan is paired with its caption by key, never by position.
+const scans = [
+  { key: 'diploma', src: diploma, position: '50% 0%' },
+  { key: 'certificate', src: certificate, position: '50% 50%' },
+] as const;
+const documents = await Promise.all(
+  scans.map(async ({ key, src, position }) => ({
+    src,
+    position,
+    full: await getImage({
+      src,
+      width: Math.min(src.width, 1100),
+      format: 'webp',
+      quality: 60,
+    }),
+    ...education.items[key],
+  })),
+);
+
+type Props = Record<string, never>;
+---
+
+<section
+  id="education"
+  class="container section education"
+  aria-labelledby="education-title"
+>
+  <h2 id="education-title" class="eyebrow">
+    {education.eyebrow}
+  </h2>
+  <ul class="docs">
+    {documents.map((doc) => (
+      <li class="doc">
+        <a class="doc-thumb" href={doc.full.src}>
+          <Image
+            src={doc.src}
+            width={112}
+            widths={[112, 224, 336]}
+            sizes="112px"
+            alt={doc.alt}
+            style={`object-position: ${doc.position}`}
+          />
+          <span class="visually-hidden">{education.open}</span>
+        </a>
+        <div class="doc-text">
+          <p class="doc-meta">{doc.meta}</p>
+          <h3>{doc.title}</h3>
+          <p>{doc.text}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  /* Last block before the footer; the contact section above gives the gap. */
+  .education {
+    padding-block: 0 4rem;
+  }
+
+  .docs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(21.25rem, 100%), 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .doc {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+  }
+
+  .doc-thumb {
+    flex: none;
+    border-radius: 6px;
+  }
+
+  .doc-thumb :global(img) {
+    width: 7rem;
+    height: 4.875rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    object-fit: cover;
+  }
+
+  .doc-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .doc-meta {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .doc h3 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .doc-text p:last-child {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  @media (width < 53.75em), (orientation: landscape) and (height <= 31.25em) {
+    .education {
+      padding-bottom: 2.5rem;
+    }
+
+    .doc-thumb :global(img) {
+      width: 5.25rem;
+      height: 3.75rem;
+    }
+
+    .doc h3 {
+      font-size: 0.875rem;
+    }
+
+    .doc-text p:last-child {
+      font-size: 0.8125rem;
+    }
+  }
+</style>
