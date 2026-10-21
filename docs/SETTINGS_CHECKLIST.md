@@ -50,6 +50,7 @@ to the repository.
 ```bash
 gh api -X PUT "repos/$REPO/environments/release" --input - <<'JSON'
 {
+  "reviewers": [],
   "deployment_branch_policy": { "protected_branches": false, "custom_branch_policies": true }
 }
 JSON
@@ -235,14 +236,20 @@ from adding content or running workflows unreviewed.
 ```bash
 # No issues, wiki or projects: nothing on the site needs them.
 gh api -X PATCH "repos/$REPO" -F has_issues=false -F has_wiki=false -F has_projects=false
-# Workflows get a read-only token unless they ask for more (ours all do).
+# Workflows get a read-only token; ours declare their own permissions per job.
 gh api -X PUT "repos/$REPO/actions/permissions/workflow" \
   -f default_workflow_permissions=read -F can_approve_pull_request_reviews=false
 # Fork PRs from anyone outside the repo wait for approval before workflows run.
 gh api -X PUT "repos/$REPO/actions/permissions/fork-pr-contributor-approval" \
   -f approval_policy=all_external_contributors
-# Dependabot alerts (secret scanning and push protection are on by default).
+# Dependabot alerts.
 gh api -X PUT "repos/$REPO/vulnerability-alerts"
+# Secret scanning runs on public repositories by default; push protection for a
+# repository does not, so set it explicitly (both enabled as of 2026-10-20).
+gh api -X PATCH "repos/$REPO" --input - <<'JSON'
+{ "security_and_analysis": { "secret_scanning_push_protection": { "status": "enabled" } } }
+JSON
+gh api "repos/$REPO" --jq .security_and_analysis
 ```
 
 ## Launch (done)
