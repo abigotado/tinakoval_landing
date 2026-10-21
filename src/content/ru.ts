@@ -15,6 +15,8 @@ export const contacts = {
     handle: '@tinakseniya',
     href: 'https://t.me/tinakseniya',
     link: 't.me/tinakseniya',
+    /** Label and handle in one line (header menu). */
+    title: 'Telegram · @tinakseniya',
   },
   // Telegram is the only public contact (D-10): never add a phone number,
   // WhatsApp or Instagram to the site.
@@ -29,6 +31,9 @@ export const price = {
   usdValue: usd,
   // No-break spaces keep «5000 ₽» and «50 $» whole when the line wraps.
   amount: `${rub}\u00a0₽ / ${usd}\u00a0$`,
+  /** Between the duration and the amount in the hero, and between amounts. */
+  dot: ' · ',
+  slash: ' / ',
   rub: `${rub}\u00a0₽`,
   usd: `${usd}\u00a0$`,
   /** Read instead of the slash by screen readers. */

@@ -62,11 +62,16 @@ type Props = Record<string, never>;
         calc(0.75rem + env(safe-area-inset-bottom, 0px))
         max(1rem, env(safe-area-inset-left, 0px));
       border-top: 1px solid var(--line);
-      background: rgb(241 230 201 / 0.94);
-      transition:
-        transform 0.25s ease,
-        opacity 0.25s ease,
-        visibility 0.25s;
+      background: var(--paper-veil);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .dock {
+        transition:
+          transform 0.25s ease,
+          opacity 0.25s ease,
+          visibility 0.25s;
+      }
     }
 
     .dock[data-hidden] {

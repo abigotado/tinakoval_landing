@@ -374,23 +374,11 @@ Options, with no tool added without the owner's agreement:
 The audit of 2026-10-20 found the code breaking these Must rules. They will be
 fixed in follow-up PRs; remove an item when its fix lands.
 
-- §1 script fallback: below 860 px the phone navigation needs JS to open
-  (`Header.astro`).
-- §1 `sizes` (`Hero.astro`, `Education.astro`): the portrait says 420 px where the CSS renders 320
-  px between 860 and 1149 px, and 280 px where it renders about 246 px between
-  600 and 859 px; the education thumbnails say 112 px where they render 84 px
-  below 860 px.
 - §1 global CSS order: pages import components before `Base`, so `global.css`
   loads after component CSS.
-- §2 tokens: raw colours in `Dock.astro`, `global.css`, the WHO cover and
-  `theme-color` in `Base.astro`.
-- §2 motion: the dock's show/hide transition is not gated by
-  `prefers-reduced-motion`, and spec §7 does not list it among the allowed
-  animations (add it to the spec or drop it).
-- §7 copy: separators and the hero price string are assembled in markup.
-- §1 media queries: no `cssTarget` is set, so `dist/` ships range syntax
-  that Safari below 16.4 ignores (no mobile layout there). The source also
-  leaves 1/16em gaps (`max-width: 53.6875em` vs `min-width: 53.75em`).
+- §1 media queries: `max-width: 53.6875em` and `min-width: 53.75em` leave a
+  1/16em gap (859–860 px at the default font size). Range syntax would close
+  it, but lowered for Safari 15 it becomes `not (min-width: …)`.
 
 ## Open questions
 

@@ -40,7 +40,7 @@ type Props = Record<string, never>;
         ))}
       </ul>
       <ExternalLink class="nav-contact" href={contacts.telegram.href}>
-        {contacts.telegram.label} · {contacts.telegram.handle}
+        {contacts.telegram.title}
       </ExternalLink>
     </nav>
     <a class="btn btn-primary header-cta" href={`${base}#contact`}>
@@ -311,6 +311,48 @@ type Props = Record<string, never>;
     .nav {
       position: absolute;
       inset: 100% 0 auto;
+    }
+  }
+
+  /* Without JS the menu button cannot open the phone menu, so the links wrap
+     under the name instead, and the taller header scrolls away with the page. */
+  @media (scripting: none) and (max-width: 53.6875em),
+    (scripting: none) and (orientation: landscape) and (max-height: 31.25em) {
+    .header {
+      position: relative;
+    }
+
+    .header-inner {
+      flex-wrap: wrap;
+    }
+
+    .menu-button {
+      display: none;
+    }
+
+    .nav {
+      display: block;
+      position: static;
+      flex-basis: 100%;
+      padding: 0;
+      overflow: visible;
+      background: none;
+    }
+
+    .nav-list {
+      flex-flow: row wrap;
+      gap: 0 1.25rem;
+    }
+
+    .nav-list a,
+    .nav-contact {
+      min-height: 2.75rem;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      align-items: center;
     }
   }
 </style>
