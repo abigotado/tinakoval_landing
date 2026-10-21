@@ -38,15 +38,19 @@ gh api -X PATCH "repos/$REPO" -F allow_squash_merge=true -F allow_merge_commit=f
 update commits touching `.github/workflows/` (Dependabot bumps do) and its
 pushes would not trigger Deploy. The key is an environment secret of `release`,
 so only a job in that environment can read it: the environment only accepts
-runs from `stage` (Release is dispatched from the default branch) and waits for
-the owner's approval. A repository-level secret would be readable by any
-workflow on any branch, so it must not exist.
+runs from `stage` (Release is dispatched from the default branch). A
+repository-level secret would be readable by any workflow on any branch, so it
+must not exist.
+
+The environment has no required reviewer (removed by the owner on 2026-10-20 to
+release without a manual click). Release stays owner-only because
+`release.yml` refuses any other triggering actor, and only the owner can write
+to the repository.
 
 ```bash
-OWNER_ID=$(gh api users/abigotado --jq .id)
-gh api -X PUT "repos/$REPO/environments/release" --input - <<JSON
+gh api -X PUT "repos/$REPO/environments/release" --input - <<'JSON'
 {
-  "reviewers": [{ "type": "User", "id": $OWNER_ID }],
+  "reviewers": [],
   "deployment_branch_policy": { "protected_branches": false, "custom_branch_policies": true }
 }
 JSON
@@ -200,10 +204,9 @@ gh api "repos/$REPO/branches/main/protection"   # expect: Branch not protected (
 gh api -X DELETE "repos/$REPO/branches/main/protection"
 ```
 
-Not verified end to end: that GitHub accepts a `DeployKey` bypass actor on a
-personal repository. If the API rejects the payload, try adding the deploy key
-as a bypass actor in Settings → Rules → main-release. The first **Release** run
-is the real test. If its push to `main` is rejected, fast-forward by hand with
+Verified: GitHub accepts the `DeployKey` bypass actor on this personal
+repository, and Release pushed `main` with the key for v1.0.0 to v1.0.3. If a
+Release push to `main` is ever rejected, fast-forward by hand with
 `main-release` switched off, then re-run Release: it resumes when `main`
 already equals `stage` (tags, publishes the release, deploys).
 
@@ -225,9 +228,31 @@ deployment branch policy from step 3.
 gh api -X DELETE "repos/$REPO/git/refs/heads/gh-pages"
 ```
 
-## Launch checklist (later)
+## 9. Hardening for a public repository
 
-- Set `indexable = true` in `src/launch.ts`.
-- Remove `skipAudits` from `lighthouserc.json` (the placeholder is noindex, so
-  Lighthouse `is-crawlable` is skipped to keep the SEO score at 1).
-- Run **Release** with `major` for `v1.0.0`.
+Applied 2026-10-20. Only the owner can write; these settings keep outsiders
+from adding content or running workflows unreviewed.
+
+```bash
+# No issues, wiki or projects: nothing on the site needs them.
+gh api -X PATCH "repos/$REPO" -F has_issues=false -F has_wiki=false -F has_projects=false
+# Workflows get a read-only token; ours declare their own permissions per job.
+gh api -X PUT "repos/$REPO/actions/permissions/workflow" \
+  -f default_workflow_permissions=read -F can_approve_pull_request_reviews=false
+# Fork PRs from anyone outside the repo wait for approval before workflows run.
+gh api -X PUT "repos/$REPO/actions/permissions/fork-pr-contributor-approval" \
+  -f approval_policy=all_external_contributors
+# Dependabot alerts.
+gh api -X PUT "repos/$REPO/vulnerability-alerts"
+# Secret scanning runs on public repositories by default; push protection for a
+# repository does not, so set it explicitly (both enabled as of 2026-10-20).
+gh api -X PATCH "repos/$REPO" --input - <<'JSON'
+{ "security_and_analysis": { "secret_scanning_push_protection": { "status": "enabled" } } }
+JSON
+gh api "repos/$REPO" --jq .security_and_analysis
+```
+
+## Launch (done)
+
+Launched with v1.0.0 on 2026-10-20: `indexable = true` in `src/launch.ts`,
+`skipAudits` removed from `lighthouserc.json`.

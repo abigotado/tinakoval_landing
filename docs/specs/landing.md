@@ -325,7 +325,7 @@ Telegram.
 - [ ] Домен и HTTPS работают, сайт открывается из России без VPN (проверяют
       2–3 человека).
 - [x] `indexable = true`, из `lighthouserc.json` убран `skipAudits`.
-- [ ] Release с `major` → `v1.0.0`.
+- [x] Release с `major` → `v1.0.0` (2026-10-20).
 
 ## 12. Вне рамок
 

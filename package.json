@@ -1,6 +1,5 @@
 {
   "name": "tinakoval-landing",
-  "version": "0.1.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -15,14 +14,14 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.10",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.4.0",
-    "typescript": "^6.0.3"
+    "astro": "^7.4.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@lhci/cli": "^0.15.1",
     "prettier": "^3.9.10",
-    "prettier-plugin-astro": "^1.1.1"
+    "prettier-plugin-astro": "^1.1.1",
+    "typescript": "^6.0.3"
   }
 }

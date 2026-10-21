@@ -1,16 +1,12 @@
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
-import { indexable } from './src/launch.ts';
-
-// DEPLOY_ENV=stage builds the preview copy served under /stage/ (see
-// .github/workflows/deploy.yml). Anything else is the production build.
-const isStage = process.env.DEPLOY_ENV === 'stage';
+import { isStage, noindex } from './src/config.ts';
 
 export default defineConfig({
   site: 'https://tinaksenia.com',
   base: isStage ? '/stage/' : '/',
   trailingSlash: 'always',
-  // No sitemap on stage (never indexed) or before launch (page is noindex).
-  integrations: !isStage && indexable ? [sitemap()] : [],
+  // No sitemap for pages that are not indexed (stage, or before launch).
+  integrations: noindex ? [] : [sitemap()],
 });

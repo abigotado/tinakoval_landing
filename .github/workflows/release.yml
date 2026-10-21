@@ -8,7 +8,7 @@
 #
 # Versioning: next vX.Y.Z is computed from the highest vX.Y.Z tag. With no tag
 # yet the base is v0.0.0, so the first run gives v0.0.1 (patch), v0.1.0 (minor)
-# or v1.0.0 (major). Use `major` for the public launch (v1.0.0).
+# or v1.0.0 (major). The public launch was v1.0.0.
 #
 # The push to main uses a deploy key (secret RELEASE_DEPLOY_KEY of the `release`
 # environment), not GITHUB_TOKEN, because GITHUB_TOKEN can never push commits

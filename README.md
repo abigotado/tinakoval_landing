@@ -26,7 +26,7 @@ Checks used by CI: `npm run format:check`, `npm run check`, and Lighthouse CI
 ## Release
 
 Actions → **Release** → Run workflow (on the default branch `stage`) → pick
-`patch`, `minor` or `major`, then approve the `release` environment. It needs
+`patch`, `minor` or `major`. Only the repository owner can run it. It needs
 green CI and Deploy runs for the `stage` head, fast-forwards `main` to `stage`,
 tags `vX.Y.Z`, creates a GitHub Release and deploys production. Details are in
 [.github/workflows/release.yml](.github/workflows/release.yml).
