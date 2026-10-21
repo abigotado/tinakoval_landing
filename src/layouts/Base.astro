@@ -47,6 +47,10 @@ const fallbackFaces = [
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
+    {/* Set before first paint: the phone menu button needs JS (AC-HEADER-3). */}
+    <script is:inline>
+      document.documentElement.dataset.js = '';
+    </script>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
@@ -56,6 +60,7 @@ const fallbackFaces = [
     {noindex && <meta name="robots" content="noindex" />}
     {hasCanonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    {/* Same as --paper; an HTML attribute cannot read a CSS token. */}
     <meta name="theme-color" content="#F1E6C9" />
     <link
       rel="preload"

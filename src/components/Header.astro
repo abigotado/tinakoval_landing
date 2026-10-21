@@ -40,7 +40,7 @@ type Props = Record<string, never>;
         ))}
       </ul>
       <ExternalLink class="nav-contact" href={contacts.telegram.href}>
-        {contacts.telegram.label} · {contacts.telegram.handle}
+        {contacts.telegram.title}
       </ExternalLink>
     </nav>
     <a class="btn btn-primary header-cta" href={`${base}#contact`}>
@@ -311,6 +311,53 @@ type Props = Record<string, never>;
     .nav {
       position: absolute;
       inset: 100% 0 auto;
+    }
+  }
+
+  /* Without JS (no data-js flag from Base) the menu button cannot open the
+     phone menu, so the links wrap under the name instead, and the taller header
+     scrolls away with the page (AC-HEADER-3). */
+  @media (max-width: 53.6875em),
+    (orientation: landscape) and (max-height: 31.25em) {
+    :global(html:not([data-js])) {
+      scroll-padding-top: 0.5rem;
+    }
+
+    :global(html:not([data-js])) .header {
+      position: relative;
+    }
+
+    :global(html:not([data-js])) .header-inner {
+      flex-wrap: wrap;
+    }
+
+    :global(html:not([data-js])) .menu-button {
+      display: none;
+    }
+
+    :global(html:not([data-js])) .nav {
+      display: block;
+      position: static;
+      flex-basis: 100%;
+      padding: 0;
+      overflow: visible;
+      background: none;
+    }
+
+    :global(html:not([data-js])) .nav-list {
+      flex-flow: row wrap;
+      gap: 0 1.25rem;
+    }
+
+    :global(html:not([data-js])) .nav-list a,
+    :global(html:not([data-js])) .nav-contact {
+      min-height: 2.75rem;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      align-items: center;
     }
   }
 </style>

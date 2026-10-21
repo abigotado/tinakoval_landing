@@ -113,7 +113,9 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
 - **Must** Make the layout work at 320 CSS px without horizontal scrolling.
   [WCAG 1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)
 - **Should** Write media queries as `min-width`/`max-width` in `em`, and set
-  `vite.build.cssTarget` to the oldest engines we serve. Then the minifier
+  `vite.build.cssTarget` to the oldest engines we serve, naming iOS separately
+  (`ios15` next to `safari15`, or iPhone-only prefixes such as
+  `-webkit-text-size-adjust` are dropped). Then the minifier
   (Lightning CSS) emits plain `min-`/`max-` queries in `dist/`. Range syntax
   (`width < 53.75em`) needs Safari 16.4+. Lowered for older targets, it becomes
   `not (min-width: …)`, which is newer grammar as well.
@@ -210,9 +212,10 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   which is the `<Image>` default.
   [Choose the right image format](https://web.dev/articles/choose-the-right-image-format)
 - **Should** Inline the site CSS into the HTML
-  (`build.inlineStylesheets: 'always'`). Today there are two render-blocking
-  stylesheets of about 5 KB gzipped in total. On a single-page site the extra
-  round trip costs more than the lost caching. Measure LCP before and after.
+  (`build.inlineStylesheets: 'always'`, on). It removes the render-blocking
+  stylesheet requests; the home page grew from 12.6 to 17.8 KB gzipped. On a
+  single-page site the extra round trip costs more than the lost caching.
+  Lighthouse CI keeps watching LCP.
   [Optimize LCP: render-blocking CSS](https://web.dev/articles/optimize-lcp),
   [build.inlineStylesheets](https://docs.astro.build/en/reference/configuration-reference/#buildinlinestylesheets)
 - **Must** Keep client JS within the budget (≤ 5 KB, AC-PERF-2): no frameworks,
@@ -371,26 +374,14 @@ Options, with no tool added without the owner's agreement:
 
 ## Known gaps
 
-The audit of 2026-10-20 found the code breaking these Must rules. They will be
+The audit of 2026-10-20 found the code breaking these rules. They will be
 fixed in follow-up PRs; remove an item when its fix lands.
 
-- §1 script fallback: below 860 px the phone navigation needs JS to open
-  (`Header.astro`).
-- §1 `sizes` (`Hero.astro`, `Education.astro`): the portrait says 420 px where the CSS renders 320
-  px between 860 and 1149 px, and 280 px where it renders about 246 px between
-  600 and 859 px; the education thumbnails say 112 px where they render 84 px
-  below 860 px.
 - §1 global CSS order: pages import components before `Base`, so `global.css`
   loads after component CSS.
-- §2 tokens: raw colours in `Dock.astro`, `global.css`, the WHO cover and
-  `theme-color` in `Base.astro`.
-- §2 motion: the dock's show/hide transition is not gated by
-  `prefers-reduced-motion`, and spec §7 does not list it among the allowed
-  animations (add it to the spec or drop it).
-- §7 copy: separators and the hero price string are assembled in markup.
-- §1 media queries: no `cssTarget` is set, so `dist/` ships range syntax
-  that Safari below 16.4 ignores (no mobile layout there). The source also
-  leaves 1/16em gaps (`max-width: 53.6875em` vs `min-width: 53.75em`).
+- §1 media queries: `max-width: 53.6875em` and `min-width: 53.75em` leave a
+  1/16em gap (859–860 px at the default font size). Range syntax would close
+  it, but lowered for Safari 15 it becomes `not (min-width: …)`.
 
 ## Open questions
 
