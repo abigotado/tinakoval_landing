@@ -9,6 +9,10 @@
   --muted: #5f5563;
   --line: #d9d2d6;
   --line-olive: #c9cfc4;
+  /* Text on ink and plum fills. */
+  --on-dark: #fff;
+  /* The booking dock: paper that lets the page show through a little. */
+  --paper-veil: rgb(241 230 201 / 0.94);
 
   --serif: 'Spectral', 'Spectral Fallback', Georgia, serif;
   --sans:
@@ -152,7 +156,7 @@ a {
   padding: 0.625rem 1rem;
   border-radius: 8px;
   background: var(--ink);
-  color: #fff;
+  color: var(--on-dark);
   font-weight: 500;
   text-decoration: none;
   transform: translateY(-200%);
@@ -234,13 +238,13 @@ a {
 
 .btn-primary {
   background: var(--plum);
-  color: #fff;
+  color: var(--on-dark);
 }
 
 @media (hover: hover) {
   .btn-primary:hover {
     background: var(--plum-dark);
-    color: #fff;
+    color: var(--on-dark);
   }
 }
 

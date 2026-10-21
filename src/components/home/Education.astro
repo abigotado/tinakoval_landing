@@ -44,8 +44,8 @@ type Props = Record<string, never>;
           <Image
             src={doc.src}
             width={112}
-            widths={[112, 224, 336]}
-            sizes="112px"
+            widths={[84, 112, 168, 224, 336]}
+            sizes="(max-width: 53.6875em) 84px, (orientation: landscape) and (max-height: 31.25em) 84px, 112px"
             alt={doc.alt}
             style={`object-position: ${doc.position}`}
           />

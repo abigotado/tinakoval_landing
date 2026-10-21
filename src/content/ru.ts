@@ -4,6 +4,12 @@
  * Edit wording here; markup lives in src/pages and src/components.
  */
 
+/** Separators inside one line of copy. */
+const dot = ' · ';
+const slash = ' / ';
+const telegramLabel = 'Telegram';
+const telegramHandle = '@tinakseniya';
+
 export const person = {
   name: 'Ксения Панькова',
   profession: 'психолог',
@@ -11,10 +17,12 @@ export const person = {
 
 export const contacts = {
   telegram: {
-    label: 'Telegram',
-    handle: '@tinakseniya',
+    label: telegramLabel,
+    handle: telegramHandle,
     href: 'https://t.me/tinakseniya',
     link: 't.me/tinakseniya',
+    /** Label and handle in one line (header menu). */
+    title: `${telegramLabel}${dot}${telegramHandle}`,
   },
   // Telegram is the only public contact (D-10): never add a phone number,
   // WhatsApp or Instagram to the site.
@@ -28,7 +36,11 @@ export const price = {
   rubValue: rub,
   usdValue: usd,
   // No-break spaces keep «5000 ₽» and «50 $» whole when the line wraps.
-  amount: `${rub}\u00a0₽ / ${usd}\u00a0$`,
+  amount: `${rub}\u00a0₽${slash}${usd}\u00a0$`,
+  /** Between the duration and the amounts in the hero. */
+  dot,
+  /** Between the two amounts. */
+  slash,
   rub: `${rub}\u00a0₽`,
   usd: `${usd}\u00a0$`,
   /** Read instead of the slash by screen readers. */
