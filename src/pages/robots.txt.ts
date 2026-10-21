@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-import { indexable, isStage } from '../config';
+import { noindex } from '../config';
 
 // Only the production build's robots.txt is served (it lives at the site root).
 // /stage/ is deliberately not disallowed: crawlers must be able to fetch stage
@@ -10,7 +10,7 @@ export const GET: APIRoute = () =>
     [
       'User-agent: *',
       'Allow: /',
-      ...(isStage || !indexable
+      ...(noindex
         ? []
         : ['', 'Sitemap: https://tinaksenia.com/sitemap-index.xml']),
       '',

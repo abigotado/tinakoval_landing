@@ -1,8 +1,11 @@
 import { indexable } from './launch';
 
-/** Stage builds are always noindex; production flips on at launch (launch.ts). */
-export const isStage = import.meta.env.DEPLOY_ENV === 'stage';
+/**
+ * DEPLOY_ENV=stage builds the preview copy served under /stage/ (see
+ * .github/workflows/deploy.yml); anything else is production. Read at build
+ * time by astro.config.mjs and the pages alike, so it is defined only here.
+ */
+export const isStage = process.env.DEPLOY_ENV === 'stage';
 
-export { indexable };
-
+/** Stage is never indexed; production follows launch.ts. */
 export const noindex = isStage || !indexable;

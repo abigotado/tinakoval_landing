@@ -37,8 +37,9 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 - Release: Actions → **Release** (run on `stage`, the default branch) → choose
   `patch|minor|major`. It requires green CI and Deploy runs for the `stage`
   head, fast-forwards `main` to `stage`, tags `vX.Y.Z`, publishes a GitHub
-  Release and deploys production. Owner only (the `release` environment needs
-  the owner's approval). Use `major` for the public launch (`v1.0.0`).
+  Release and deploys production. Owner only: the workflow refuses any other
+  triggering actor, and the `release` environment (which holds the deploy key)
+  accepts runs from `stage` only. There is no manual approval step.
 - Deploy rebuilds both branches on every push to either, each in its own job,
   so the stage build cannot alter the production output. Residual risk: the
   workflow itself is the `deploy.yml` of the pushed branch, so a change to
@@ -59,8 +60,9 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
   (files in `public/fonts`, `@font-face` in our CSS).
 - Wording: она **психолог**. Never call her «психотерапевт», and never promise
   treatment, cure or guaranteed results.
-- The site stays `noindex` until launch (`src/launch.ts` → `indexable`). At
-  launch also drop `skipAudits` from `lighthouserc.json`.
+- Production is indexable since v1.0.0 (`src/launch.ts` → `indexable`). Stage
+  builds are always `noindex` (`src/config.ts`), and only indexable builds get a
+  sitemap.
 
 ## Specs
 
@@ -75,8 +77,8 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 
 ## Conventions
 
-- Page markup comes from the approved Claude Design mockups; do not invent
-  design. Current `src/pages/index.astro` is a placeholder.
+- Page markup follows the final Claude Design mockup together with its canvas
+  comments (D-13); do not invent design.
 - All pages use `src/layouts/Base.astro` (`lang="ru"`, meta, robots).
 - Use `import.meta.env.BASE_URL` for asset URLs, since stage is served under
   `/stage/`.
