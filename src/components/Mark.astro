@@ -7,7 +7,10 @@ import type { HTMLAttributes } from 'astro/types';
 
 // The rest carries the parent's scope attribute, so parents style the mark
 // with plain scoped selectors.
-interface Props extends HTMLAttributes<'svg'> {
+interface Props extends Omit<
+  HTMLAttributes<'svg'>,
+  'aria-hidden' | 'focusable' | 'role' | 'viewBox'
+> {
   variant: 'yong' | 'column';
 }
 
@@ -63,11 +66,11 @@ const strokes = COLUMN.flatMap((glyph, row) => glyph.map((d) => ({ d, row })));
 
 {variant === 'yong' ? (
   <svg
-    {...rest}
     class:list={['mark', className]}
     viewBox="8 6 94 94"
     aria-hidden="true"
     focusable="false"
+    {...rest}
   >
     {YONG.map((d) => (
       <path d={d} />
@@ -75,11 +78,11 @@ const strokes = COLUMN.flatMap((glyph, row) => glyph.map((d) => ({ d, row })));
   </svg>
 ) : (
   <svg
-    {...rest}
     class:list={['mark', 'mark-column', className]}
     viewBox="0 0 109 327"
     aria-hidden="true"
     focusable="false"
+    {...rest}
   >
     {strokes.map(({ d, row }, i) => (
       <path
