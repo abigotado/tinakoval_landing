@@ -52,12 +52,11 @@ type Props = Record<string, never>;
 <script>
   // Phone menu (AC-HEADER-2): toggles on the button, closes on Esc and after
   // a link is chosen, and returns focus to the button.
-  const button =
-    document.querySelector<HTMLButtonElement>('[data-menu-button]');
-  const menu = document.querySelector<HTMLElement>('[data-menu]');
-  const header = document.querySelector<HTMLElement>('[data-header]');
+  const button = document.querySelector('[data-menu-button]');
+  const menu = document.querySelector('[data-menu]');
+  const header = document.querySelector('[data-header]');
 
-  if (header) {
+  if (header instanceof HTMLElement) {
     // The header grows with a larger system font; keep scroll offsets and the
     // phone menu in step with its real height (CSS values are the fallback).
     new ResizeObserver(() => {
@@ -68,7 +67,11 @@ type Props = Record<string, never>;
     }).observe(header, { box: 'border-box' });
   }
 
-  if (button && menu && header) {
+  if (
+    button instanceof HTMLButtonElement &&
+    menu instanceof HTMLElement &&
+    header instanceof HTMLElement
+  ) {
     const setOpen = (open: boolean, restoreFocus = false) => {
       button.setAttribute('aria-expanded', String(open));
       button.textContent = open
@@ -82,7 +85,8 @@ type Props = Record<string, never>;
       setOpen(button.getAttribute('aria-expanded') !== 'true'),
     );
     menu.addEventListener('click', (event) => {
-      const link = (event.target as Element).closest('a');
+      if (!(event.target instanceof Element)) return;
+      const link = event.target.closest('a');
       if (!link || !menu.hasAttribute('data-open')) return;
       setOpen(false, true);
       // A same-page anchor would move focus away from the button, so scroll
@@ -102,8 +106,8 @@ type Props = Record<string, never>;
       }
     });
     header.addEventListener('focusout', (event) => {
-      const next = event.relatedTarget as Node | null;
-      if (next && !header.contains(next)) setOpen(false);
+      const next = event.relatedTarget;
+      if (next instanceof Node && !header.contains(next)) setOpen(false);
     });
   }
 </script>

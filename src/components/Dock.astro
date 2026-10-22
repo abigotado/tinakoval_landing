@@ -19,10 +19,10 @@ type Props = Record<string, never>;
 <script>
   // Phone booking bar (§5.13): hide it while the contact section is on
   // screen. Without JS it simply stays visible (AC-DOCK-2).
-  const bar = document.querySelector<HTMLElement>('[data-dock]');
+  const bar = document.querySelector('[data-dock]');
   const contact = document.getElementById('contact');
 
-  if (bar) {
+  if (bar instanceof HTMLElement) {
     // Real bar height (0 when hidden on wide screens) for the footer padding
     // and scroll offsets; the CSS value is the fallback.
     new ResizeObserver(() => {
@@ -33,7 +33,11 @@ type Props = Record<string, never>;
     }).observe(bar, { box: 'border-box' });
   }
 
-  if (bar && contact && 'IntersectionObserver' in window) {
+  if (
+    bar instanceof HTMLElement &&
+    contact &&
+    'IntersectionObserver' in window
+  ) {
     new IntersectionObserver(([entry]) => {
       const hidden = entry?.isIntersecting ?? false;
       bar.toggleAttribute('data-hidden', hidden);
