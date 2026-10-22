@@ -139,7 +139,7 @@ type Props = Record<string, never>;
     hyphens: manual;
   }
 
-  .brand :global(.brand-mark) {
+  .brand .brand-mark {
     flex: none;
     width: 2.125rem;
     height: 2.125rem;
@@ -206,7 +206,7 @@ type Props = Record<string, never>;
   }
 
   /* Too narrow for one row: the nav gets its own row under name and button. */
-  @media (min-width: 53.75em) and (max-width: 71.8125em) {
+  @media (min-width: 53.75em) and (max-width: 71.8749em) {
     .header-inner {
       flex-wrap: wrap;
       gap: 0 1.5rem;
@@ -224,7 +224,7 @@ type Props = Record<string, never>;
     }
   }
 
-  @media (max-width: 53.6875em),
+  @media (max-width: 53.7499em),
     (orientation: landscape) and (max-height: 31.25em) {
     .header-inner {
       justify-content: space-between;
@@ -307,7 +307,7 @@ type Props = Record<string, never>;
 
   /* Very short screen with a large system font: the header scrolls away
      instead of covering most of the page, and the menu opens below it. */
-  @media (max-height: 19.9375em) {
+  @media (max-height: 19.9999em) {
     .header {
       position: relative;
     }
@@ -321,7 +321,7 @@ type Props = Record<string, never>;
   /* Without JS (no data-js flag from Base) the menu button cannot open the
      phone menu, so the links wrap under the name instead, and the taller header
      scrolls away with the page (AC-HEADER-3). */
-  @media (max-width: 53.6875em),
+  @media (max-width: 53.7499em),
     (orientation: landscape) and (max-height: 31.25em) {
     :global(html:not([data-js])) {
       scroll-padding-top: 0.5rem;
