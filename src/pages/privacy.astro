@@ -1,8 +1,10 @@
 ---
+// Base first, so global.css loads before component styles.
+import Base from '../layouts/Base.astro';
+
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { contacts, policy } from '../content/ru';
-import Base from '../layouts/Base.astro';
 ---
 
 <Base title={policy.metaTitle} description={policy.metaDescription}>
@@ -72,7 +74,7 @@ import Base from '../layouts/Base.astro';
     margin-top: 0.75rem;
   }
 
-  @media (max-width: 53.6875em),
+  @media (max-width: 53.7499em),
     (orientation: landscape) and (max-height: 31.25em) {
     .policy {
       padding-block: 2.5rem 4rem;

@@ -1,8 +1,10 @@
 ---
+// Base first, so global.css loads before component styles.
+import Base from '../layouts/Base.astro';
+
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { notFound } from '../content/ru';
-import Base from '../layouts/Base.astro';
 
 const base = import.meta.env.BASE_URL;
 ---

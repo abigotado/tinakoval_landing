@@ -86,7 +86,7 @@ type Props = Record<string, never>;
     color: var(--muted);
   }
 
-  .book-text :global(.book-link) {
+  .book-text .book-link {
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
@@ -96,7 +96,7 @@ type Props = Record<string, never>;
     text-underline-offset: 0.25rem;
   }
 
-  @media (max-width: 53.6875em),
+  @media (max-width: 53.7499em),
     (orientation: landscape) and (max-height: 31.25em) {
     .book {
       display: grid;
@@ -133,7 +133,7 @@ type Props = Record<string, never>;
   }
 
   /* Very narrow, or a large system font: the cover goes above the text. */
-  @media (max-width: 22.4375em) {
+  @media (max-width: 22.4999em) {
     .book {
       grid-template-columns: minmax(0, 1fr);
     }
