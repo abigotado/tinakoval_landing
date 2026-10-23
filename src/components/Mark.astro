@@ -3,12 +3,18 @@
 // in the KanjiVG style, drawn as thin plum lines. `yong` is the single 永 for
 // the header; `column` is the vertical 花 · 永 · 愛 that the hero draws once,
 // stroke by stroke (AC-MARK-2). Decorative: the name next to it says it all.
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+// The rest carries the parent's scope attribute, so parents style the mark
+// with plain scoped selectors.
+interface Props extends Omit<
+  HTMLAttributes<'svg'>,
+  'aria-hidden' | 'focusable' | 'role' | 'viewBox'
+> {
   variant: 'yong' | 'column';
-  class?: string;
 }
 
-const { variant, class: className } = Astro.props;
+const { variant, class: className, ...rest } = Astro.props;
 
 const YONG = [
   'M45.5,13.25c5.12,2.4,8.62,5.75,10.75,9',
@@ -64,6 +70,7 @@ const strokes = COLUMN.flatMap((glyph, row) => glyph.map((d) => ({ d, row })));
     viewBox="8 6 94 94"
     aria-hidden="true"
     focusable="false"
+    {...rest}
   >
     {YONG.map((d) => (
       <path d={d} />
@@ -75,6 +82,7 @@ const strokes = COLUMN.flatMap((glyph, row) => glyph.map((d) => ({ d, row })));
     viewBox="0 0 109 327"
     aria-hidden="true"
     focusable="false"
+    {...rest}
   >
     {strokes.map(({ d, row }, i) => (
       <path

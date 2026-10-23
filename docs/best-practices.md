@@ -124,7 +124,9 @@ skipped with a reason. Researched October 2026 against Astro 7.4.
   `-webkit-text-size-adjust` are dropped). Then the minifier
   (Lightning CSS) emits plain `min-`/`max-` queries in `dist/`. Range syntax
   (`width < 53.75em`) needs Safari 16.4+. Lowered for older targets, it becomes
-  `not (min-width: …)`, which is newer grammar as well.
+  `not (min-width: …)`, which is newer grammar as well. Pair breakpoints as
+  `max-width: 53.7499em` / `min-width: 53.75em`, so no fractional width falls
+  between them.
   [Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Media_queries/Using)
 - **Should** Use media queries for page layout (header, hero, grids). Reach for
   a container query only when the same component must adapt to different column
@@ -392,17 +394,8 @@ Options, with no tool added without the owner's agreement:
 
 ## Known gaps
 
-The audit of 2026-10-20 found the code breaking these rules. They will be
-fixed in follow-up PRs; remove an item when its fix lands.
-
-- §1 global CSS order: pages import components before `Base`, so `global.css`
-  loads after component CSS.
-- §1 media queries: `max-width: 53.6875em` and `min-width: 53.75em` leave a
-  1/16em gap (859–860 px at the default font size). Range syntax would close
-  it, but lowered for Safari 15 it becomes `not (min-width: …)`.
-- §1 child styling: `Mark` takes only `class` and does not spread `...rest`,
-  so `Header` and `Hero` style it through `:global()`; `Materials` wraps
-  `.book-link` in `:global()` although the scope attribute already reaches it.
+None at the moment. When an audit finds code breaking a rule, list it here and
+remove the item when its fix lands.
 
 ## Open questions
 

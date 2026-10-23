@@ -39,7 +39,7 @@ type Props = Record<string, never>;
       src={portrait}
       formats={['avif', 'webp']}
       widths={[200, 400, 600, 840]}
-      sizes="(orientation: landscape) and (max-height: 31.25em) calc((100vh - 11.5rem) * 0.8), (max-width: 37.4375em) 200px, (max-width: 53.6875em) 32vw, (max-width: 71.8125em) 320px, 420px"
+      sizes="(orientation: landscape) and (max-height: 31.25em) calc((100vh - 11.5rem) * 0.8), (max-width: 37.4999em) 200px, (max-width: 53.7499em) 32vw, (max-width: 71.8749em) 320px, 420px"
       alt={hero.photoAlt}
       priority
     />
@@ -132,12 +132,12 @@ type Props = Record<string, never>;
 
   /* 花永愛 beside the photo (AC-MARK-2). Out of the flow, so it never moves the
      layout; shown only where the gap between text and photo can hold it. */
-  .portrait :global(.hero-mark) {
+  .portrait .hero-mark {
     display: none;
   }
 
   @media (min-width: 71.875em) {
-    .portrait :global(.hero-mark) {
+    .portrait .hero-mark {
       display: block;
       position: absolute;
       inset-inline-end: calc(100% + 1.75rem);
@@ -148,7 +148,7 @@ type Props = Record<string, never>;
   }
 
   /* Narrow desktop: keep the photo beside the text. */
-  @media (min-width: 53.75em) and (max-width: 71.8125em) {
+  @media (min-width: 53.75em) and (max-width: 71.8749em) {
     .hero {
       gap: 3rem 2.5rem;
     }
@@ -165,7 +165,7 @@ type Props = Record<string, never>;
   /* Tablet, phone and landscape phone. The photo stays beside the text until
      the phone layout below stacks them. Display sizes are capped in vw so a
      large system font still fits a narrow phone. */
-  @media (max-width: 53.6875em),
+  @media (max-width: 53.7499em),
     (orientation: landscape) and (max-height: 31.25em) {
     .hero {
       flex-wrap: nowrap;
@@ -209,7 +209,7 @@ type Props = Record<string, never>;
   }
 
   /* Phone in portrait: photo above the text, full-width button. */
-  @media (max-width: 37.4375em) and (orientation: portrait) {
+  @media (max-width: 37.4999em) and (orientation: portrait) {
     .hero {
       flex-direction: column;
       align-items: stretch;
