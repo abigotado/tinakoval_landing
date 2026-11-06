@@ -50,8 +50,9 @@ Before finishing any change run: `npm run format:check && npm run check && npm r
 
 - Never publish identity documents, the graded pages of the diploma appendix
   (page 2 onward), or any client data (names, messages, photos, details).
-  Page 1 of the appendix is approved by her as is, including her full and
-  maiden name, date of birth and document numbers.
+  The site shows the diploma itself (the front spread with her full and
+  maiden name, the diploma and registration numbers and the issue date),
+  approved as is. The appendix is not published.
 - The only public contact is Telegram @tinakseniya (nick, `t.me` link and a QR
   code). Never show her phone number, WhatsApp or Instagram on the site. The
   list of what may be published is `docs/specs/landing.md` §4.
