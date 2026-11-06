@@ -9,13 +9,12 @@ import { education } from '../../content/ru';
 // Only the diploma's front spread and the ICTA certificate (AC-EDU-1).
 // Each scan is paired with its caption by key, never by position.
 const scans = [
-  { key: 'diploma', src: diploma, position: '50% 50%' },
-  { key: 'certificate', src: certificate, position: '50% 50%' },
+  { key: 'diploma', src: diploma },
+  { key: 'certificate', src: certificate },
 ] as const;
 const documents = await Promise.all(
-  scans.map(async ({ key, src, position }) => ({
+  scans.map(async ({ key, src }) => ({
     src,
-    position,
     full: await getImage({
       src,
       width: Math.min(src.width, 1100),
@@ -47,7 +46,6 @@ type Props = Record<string, never>;
             widths={[84, 112, 168, 224, 336]}
             sizes="(max-width: 53.7499em) 84px, (orientation: landscape) and (max-height: 31.25em) 84px, 112px"
             alt={doc.alt}
-            style={`object-position: ${doc.position}`}
           />
           <span class="visually-hidden">{education.open}</span>
         </a>

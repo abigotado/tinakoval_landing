@@ -419,9 +419,9 @@ rather than applied.
    replace about 25 lines in `Base.astro`. It needs a check that output paths
    respect `/stage/` and that nothing is fetched remotely.
 4. **CSP meta (D-5, simplicity).** `security.csp` adds a policy with almost no
-   code, but the `style="--delay…"` and `style="object-position…"` attributes
-   and the `is:inline` font style block need refactoring first. The value is
-   modest on a site with no user input and no third parties.
+   code, but the `style="--delay…"` attributes and the `is:inline` font style
+   block need refactoring first. The value is modest on a site with no user
+   input and no third parties.
 5. **`strictest` tsconfig.** Stronger guarantees, but more `undefined` handling
    in `ru.ts` lookups. It is only worth it if the code keeps growing.
 6. **`font-display: swap` (AC-PERF-3) vs `optional`.** web.dev suggests
